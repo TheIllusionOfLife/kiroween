@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { GuestbookWidget } from "@/components/guestbook/GuestbookWidget";
 
 export default function SitePage({
   params,
@@ -88,12 +89,20 @@ export default function SitePage({
           </div>
         </div>
 
-        <div className="bg-white border-4 border-purple-600 shadow-2xl rounded-lg overflow-hidden">
-          <iframe
-            srcDoc={html}
-            className="w-full h-[800px] border-0"
-            title={`${site.name}'s Site`}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <div className="bg-white border-4 border-purple-600 shadow-2xl rounded-lg overflow-hidden">
+              <iframe
+                srcDoc={html}
+                className="w-full h-[800px] border-0"
+                title={`${site.name}'s Site`}
+              />
+            </div>
+          </div>
+
+          <div className="lg:col-span-1">
+            <GuestbookWidget siteId={siteId} />
+          </div>
         </div>
       </div>
     </main>

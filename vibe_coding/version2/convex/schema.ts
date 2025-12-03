@@ -15,4 +15,15 @@ export default defineSchema({
     createdAt: v.number(),
     views: v.number(),
   }).index("by_created_at", ["createdAt"]),
+
+  guestbookEntries: defineTable({
+    siteId: v.id("sites"),
+    name: v.string(),
+    message: v.string(),
+    email: v.optional(v.string()),
+    website: v.optional(v.string()),
+    timestamp: v.number(),
+  })
+    .index("by_site", ["siteId"])
+    .index("by_timestamp", ["timestamp"]),
 });

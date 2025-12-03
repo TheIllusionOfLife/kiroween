@@ -6,6 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Id } from "@/convex/_generated/dataModel";
 
+function GuestbookCount({ siteId }: { siteId: Id<"sites"> }) {
+  const count = useQuery(api.guestbook.getEntriesCount, { siteId });
+  return <span>{count ?? 0} entries 📝</span>;
+}
+
 export default function GalleryPage() {
   const sites = useQuery(api.sites.list);
 
@@ -66,6 +71,9 @@ export default function GalleryPage() {
                     </p>
                     <p className="text-sm">
                       <strong>Views:</strong> {site.views} 👀
+                    </p>
+                    <p className="text-sm">
+                      <strong>Guestbook:</strong> <GuestbookCount siteId={site._id} />
                     </p>
                     <p className="text-xs text-gray-500">
                       Created: {new Date(site.createdAt).toLocaleDateString()}
