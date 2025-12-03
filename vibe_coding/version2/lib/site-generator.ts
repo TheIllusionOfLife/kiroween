@@ -256,17 +256,20 @@ export function generateSiteHTML(config: SiteConfig): string {
 <body>
     ${config.addPopups ? `
     <script>
-        // Welcome popup
-        window.addEventListener('load', function() {
-            alert('🌟 Welcome to ${config.name}\\'s Awesome Homepage! 🌟');
-        });
-        
-        // Exit confirmation
-        window.addEventListener('beforeunload', function(e) {
-            e.preventDefault();
-            e.returnValue = 'Are you sure you want to leave this awesome site?';
-            return 'Are you sure you want to leave this awesome site?';
-        });
+        // Only show popups if not in an iframe (i.e., downloaded version)
+        if (window.self === window.top) {
+            // Welcome popup
+            window.addEventListener('load', function() {
+                alert('🌟 Welcome to ${config.name}\\'s Awesome Homepage! 🌟');
+            });
+            
+            // Exit confirmation
+            window.addEventListener('beforeunload', function(e) {
+                e.preventDefault();
+                e.returnValue = 'Are you sure you want to leave this awesome site?';
+                return 'Are you sure you want to leave this awesome site?';
+            });
+        }
         
         // Scrolling status bar text
         var statusMessages = [
