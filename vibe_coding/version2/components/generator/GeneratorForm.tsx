@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { presets } from "@/lib/presets";
 import {
   Select,
   SelectContent,
@@ -73,15 +74,62 @@ export function GeneratorForm() {
     URL.revokeObjectURL(url);
   };
 
+  const loadPreset = (presetId: string) => {
+    const preset = presets.find((p) => p.id === presetId);
+    if (preset) {
+      setName(preset.config.name);
+      setHobby(preset.config.hobby);
+      setEmail(preset.config.email);
+      setTheme(preset.config.theme);
+      setAddMusic(preset.config.addMusic);
+      setAddCursor(preset.config.addCursor);
+      setAddGifs(preset.config.addGifs);
+      setAddPopups(preset.config.addPopups);
+      setAddRainbowText(preset.config.addRainbowText);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <Card className="border-4 border-purple-600 shadow-2xl">
-        <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600">
+    <div className="space-y-8">
+      {/* Preset Selector */}
+      <Card className="border-4 border-yellow-400 shadow-2xl">
+        <CardHeader className="bg-gradient-to-r from-yellow-400 to-orange-500">
           <CardTitle className="text-white text-2xl">
-            Enter Your Info:
+            🚀 Quick Start Templates
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {presets.map((preset) => (
+              <button
+                key={preset.id}
+                onClick={() => loadPreset(preset.id)}
+                className="p-4 border-3 border-purple-400 rounded-lg hover:border-purple-600 hover:bg-purple-50 transition-all text-left group"
+              >
+                <div className="text-4xl mb-2">{preset.emoji}</div>
+                <div className="font-bold text-purple-600 group-hover:text-purple-800">
+                  {preset.name}
+                </div>
+                <div className="text-xs text-gray-600 mt-1">
+                  {preset.description}
+                </div>
+              </button>
+            ))}
+          </div>
+          <p className="text-center text-sm text-gray-600 mt-4">
+            Click a template to auto-fill the form, then customize it!
+          </p>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Card className="border-4 border-purple-600 shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600">
+            <CardTitle className="text-white text-2xl">
+              Enter Your Info:
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
           <form onSubmit={handleGenerate} className="space-y-4">
             <div>
               <Label htmlFor="name">Your Name</Label>
@@ -214,7 +262,7 @@ export function GeneratorForm() {
         </CardContent>
       </Card>
 
-      {showPreview && (
+        {showPreview && (
         <Card className="border-4 border-pink-500 shadow-2xl">
           <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-500">
             <div className="flex justify-between items-center">
@@ -238,7 +286,8 @@ export function GeneratorForm() {
             />
           </CardContent>
         </Card>
-      )}
+        )}
+      </div>
     </div>
   );
 }
