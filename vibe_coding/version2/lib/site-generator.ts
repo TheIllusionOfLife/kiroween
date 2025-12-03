@@ -8,6 +8,9 @@ export interface SiteConfig {
   addMusic: boolean;
   addCursor: boolean;
   addGifs: boolean;
+  addPopups?: boolean;
+  addRainbowText?: boolean;
+  createdAt?: number;
 }
 
 export function generateSiteHTML(config: SiteConfig): string {
@@ -24,6 +27,8 @@ export function generateSiteHTML(config: SiteConfig): string {
         body {
             background: ${theme.bg};
             ${theme.pattern ? `background-image: ${theme.pattern};` : ""}
+            ${theme.tiledBg ? `background-image: url("${theme.tiledBg}");` : ""}
+            ${theme.tiledBg ? `background-repeat: repeat;` : ""}
             color: ${theme.textColor};
             font-family: 'Comic Sans MS', cursive;
             margin: 0;
@@ -172,9 +177,52 @@ export function generateSiteHTML(config: SiteConfig): string {
             font-size: 1.5em;
             font-weight: bold;
         }
+        
+        .rainbow-text {
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .divider {
+            height: 10px;
+            background: linear-gradient(90deg, transparent, #ff00ff, #00ffff, #ffff00, #ff00ff, transparent);
+            margin: 20px 0;
+            animation: shimmer 2s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .ascii-art {
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            line-height: 1.2;
+            font-size: 0.8em;
+            text-align: center;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
+    ${config.addPopups ? `
+    <script>
+        window.addEventListener('load', function() {
+            alert('🌟 Welcome to ${config.name}\\'s Awesome Homepage! 🌟');
+        });
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = 'Are you sure you want to leave this awesome site?';
+            return 'Are you sure you want to leave this awesome site?';
+        });
+    </script>
+    ` : ""}
     ${config.addMusic ? '<div style="position: fixed; top: 10px; right: 10px; background: #ffff00; padding: 10px; border: 3px outset #000; z-index: 9999;">🎵 MIDI Music Playing! 🎵</div>' : ""}
     <div class="container">
         <div class="header">
@@ -191,11 +239,20 @@ export function generateSiteHTML(config: SiteConfig): string {
         </div>
         
         ${config.addGifs ? '<div class="gif-divider">💀 ⚡ 🔥 ⚡ 💀</div>' : ""}
+        <div class="divider"></div>
         
         <div class="content">
             <h2>👋 About Me</h2>
-            <p>Hi! My name is <strong>${config.name}</strong> and this is my personal homepage on the World Wide Web!</p>
+            <p>Hi! My name is <strong>${config.addRainbowText ? `<span class="rainbow-text">${config.name}</span>` : config.name}</strong> and this is my personal homepage on the World Wide Web!</p>
             <p>I love <strong>${config.hobby}</strong> and I made this site to share my interests with the world!</p>
+            
+            <div class="ascii-art">
+   _____ _____ _____ 
+  |  _  |  _  |  _  |
+  |\\__  |\\__  |\\__  |
+  |_____/|_____/|_____/
+   WELCOME TO THE WEB!
+            </div>
             
             <div class="fun-fact">
                 <strong>💡 DID YOU KNOW?</strong><br>
@@ -236,8 +293,12 @@ export function generateSiteHTML(config: SiteConfig): string {
             </div>
         </div>
         
+        <div class="divider"></div>
+        
         <div style="text-align: center; margin-top: 30px; font-size: 0.9em;">
+            <p>Last updated: ${config.createdAt ? new Date(config.createdAt).toLocaleString() : new Date().toLocaleString()}</p>
             <p>© ${new Date().getFullYear()} ${config.name}. All rights reserved.</p>
+            <p class="blink">⚠️ Best viewed in 800x600 resolution ⚠️</p>
         </div>
     </div>
 </body>

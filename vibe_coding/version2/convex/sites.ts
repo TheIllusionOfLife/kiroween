@@ -10,11 +10,13 @@ export const create = mutation({
     addMusic: v.boolean(),
     addCursor: v.boolean(),
     addGifs: v.boolean(),
+    addPopups: v.optional(v.boolean()),
+    addRainbowText: v.optional(v.boolean()),
+    createdAt: v.number(),
   },
   handler: async (ctx, args) => {
     const siteId = await ctx.db.insert("sites", {
       ...args,
-      createdAt: Date.now(),
       views: 0,
     });
     return siteId;

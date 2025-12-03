@@ -25,6 +25,8 @@ export function GeneratorForm() {
   const [addMusic, setAddMusic] = useState(true);
   const [addCursor, setAddCursor] = useState(true);
   const [addGifs, setAddGifs] = useState(true);
+  const [addPopups, setAddPopups] = useState(true);
+  const [addRainbowText, setAddRainbowText] = useState(true);
   const [previewHTML, setPreviewHTML] = useState("");
   const [showPreview, setShowPreview] = useState(false);
 
@@ -41,6 +43,9 @@ export function GeneratorForm() {
       addMusic,
       addCursor,
       addGifs,
+      addPopups,
+      addRainbowText,
+      createdAt: Date.now(),
     };
 
     const html = generateSiteHTML(config);
@@ -161,6 +166,28 @@ export function GeneratorForm() {
                 />
                 <Label htmlFor="gifs" className="cursor-pointer">
                   Maximum GIFs Mode 🔥
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="popups"
+                  checked={addPopups}
+                  onCheckedChange={(checked) => setAddPopups(checked as boolean)}
+                />
+                <Label htmlFor="popups" className="cursor-pointer">
+                  Annoying Popups 🚨
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="rainbow"
+                  checked={addRainbowText}
+                  onCheckedChange={(checked) => setAddRainbowText(checked as boolean)}
+                />
+                <Label htmlFor="rainbow" className="cursor-pointer">
+                  Rainbow Text 🌈
                 </Label>
               </div>
             </div>

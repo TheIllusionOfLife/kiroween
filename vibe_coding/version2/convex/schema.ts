@@ -10,6 +10,8 @@ export default defineSchema({
     addMusic: v.boolean(),
     addCursor: v.boolean(),
     addGifs: v.boolean(),
+    addPopups: v.optional(v.boolean()),
+    addRainbowText: v.optional(v.boolean()),
     createdAt: v.number(),
     views: v.number(),
   }).index("by_created_at", ["createdAt"]),
