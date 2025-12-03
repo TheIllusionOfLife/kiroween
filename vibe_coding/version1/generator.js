@@ -78,10 +78,7 @@ function generateWebsite() {
     const addMusic = document.getElementById('addMusic').checked;
     const addCursor = document.getElementById('addCursor').checked;
     const addGifs = document.getElementById('addGifs').checked;
-    const addPopups = document.getElementById('addPopups').checked;
-    const addRainbow = document.getElementById('addRainbow').checked;
     const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
-    const createdAt = new Date();
 
     const html = `
 <!DOCTYPE html>
@@ -284,52 +281,9 @@ function generateWebsite() {
             cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ctext y='15' font-size='15'%3E✨%3C/text%3E%3C/svg%3E"), auto !important;
         }
         ` : ''}
-        
-        .rainbow-text {
-            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        
-        .divider {
-            height: 10px;
-            background: linear-gradient(90deg, transparent, #ff00ff, #00ffff, #ffff00, #ff00ff, transparent);
-            margin: 20px 0;
-            animation: shimmer 2s linear infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-        
-        .ascii-art {
-            font-family: 'Courier New', monospace;
-            white-space: pre;
-            line-height: 1.2;
-            font-size: 0.8em;
-            text-align: center;
-            margin: 20px 0;
-        }
     </style>
 </head>
 <body>
-    ${addPopups ? `
-    <script>
-        window.addEventListener('load', function() {
-            alert('🌟 Welcome to ${name}\\'s Awesome Homepage! 🌟');
-        });
-        window.addEventListener('beforeunload', function(e) {
-            e.preventDefault();
-            e.returnValue = 'Are you sure you want to leave this awesome site?';
-            return 'Are you sure you want to leave this awesome site?';
-        });
-    </script>
-    ` : ''}
     ${addMusic ? '<audio autoplay loop><source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav"></audio>' : ''}
     ${addMusic ? '<div style="position: fixed; top: 10px; right: 10px; background: #ffff00; padding: 10px; border: 3px outset #000; z-index: 9999;">🎵 MIDI Music Playing! 🎵</div>' : ''}
     <div class="container">
@@ -347,20 +301,11 @@ function generateWebsite() {
         </div>
         
         ${addGifs ? '<div class="gif-divider">💀 ⚡ 🔥 ⚡ 💀</div>' : ''}
-        <div class="divider"></div>
         
         <div class="content">
             <h2>👋 About Me</h2>
-            <p>Hi! My name is <strong>${addRainbow ? `<span class="rainbow-text">${name}</span>` : name}</strong> and this is my personal homepage on the World Wide Web!</p>
+            <p>Hi! My name is <strong>${name}</strong> and this is my personal homepage on the World Wide Web!</p>
             <p>I love <strong>${hobby}</strong> and I made this site to share my interests with the world!</p>
-            
-            <div class="ascii-art">
-   _____ _____ _____ 
-  |  _  |  _  |  _  |
-  |\\__  |\\__  |\\__  |
-  |_____/|_____/|_____/
-   WELCOME TO THE WEB!
-            </div>
             
             ${addGifs ? '<div class="construction">🚧 👷 🚧 👷 🚧</div>' : '<div class="construction">🚧 👷 🚧</div>'}
             
@@ -432,12 +377,9 @@ function generateWebsite() {
             <p style="margin-top: 10px;"><em>Counter started: January 1, 1996</em></p>
         </div>
         
-        <div class="divider"></div>
-        
         <div style="text-align: center; margin-top: 30px; font-size: 0.9em;">
             ${addGifs ? '<p style="font-size: 2em;">🌈 ⚡ 💫 ⚡ 🌈</p>' : ''}
-            <p>Last updated: ${createdAt.toLocaleDateString()} at ${createdAt.toLocaleTimeString()}</p>
-            <p class="blink">⚠️ Best viewed in 800x600 resolution ⚠️</p>
+            <p>Last updated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
             <p class="blink">⭐ Best viewed with Internet Explorer 4.0 or Netscape Navigator 3.0 ⭐</p>
             <p class="blink">💾 Download required: RealPlayer, Flash Player, Shockwave 💾</p>
             <p>This page is optimized for 56k modems</p>

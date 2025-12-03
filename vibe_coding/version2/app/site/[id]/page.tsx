@@ -5,20 +5,32 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { generateSiteHTML } from "@/lib/site-generator";
 import { useEffect } from "react";
+import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function SitePage({ params }: { params: { id: string } }) {
-  const site = useQuery(api.sites.get, {
-    id: params.id as Id<"sites">,
-  });
+export default function SitePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const [siteId, setSiteId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    params.then((p) => setSiteId(p.id));
+  }, [params]);
+
+  const site = useQuery(
+    api.sites.get,
+    siteId ? { id: siteId as Id<"sites"> } : "skip"
+  );
   const incrementViews = useMutation(api.sites.incrementViews);
 
   useEffect(() => {
-    if (site) {
-      incrementViews({ id: params.id as Id<"sites"> });
+    if (site && siteId) {
+      incrementViews({ id: siteId as Id<"sites"> });
     }
-  }, [site, params.id, incrementViews]);
+  }, [site, siteId, incrementViews]);
 
   if (!site) {
     return (
