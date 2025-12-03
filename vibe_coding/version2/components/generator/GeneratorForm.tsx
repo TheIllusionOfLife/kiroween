@@ -27,6 +27,7 @@ export function GeneratorForm() {
   const [addGifs, setAddGifs] = useState(true);
   const [addPopups, setAddPopups] = useState(true);
   const [addRainbowText, setAddRainbowText] = useState(true);
+  const [maxChaos, setMaxChaos] = useState(false);
   const [previewHTML, setPreviewHTML] = useState("");
   const [showPreview, setShowPreview] = useState(false);
 
@@ -188,6 +189,17 @@ export function GeneratorForm() {
                 />
                 <Label htmlFor="rainbow" className="cursor-pointer">
                   Rainbow Text 🌈
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="maxChaos"
+                  checked={maxChaos}
+                  onCheckedChange={(checked) => setMaxChaos(checked as boolean)}
+                />
+                <Label htmlFor="maxChaos" className="cursor-pointer">
+                  MAXIMUM CHAOS MODE 💥
                 </Label>
               </div>
             </div>
