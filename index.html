@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>90s Website Generator 🌟</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="generator-container">
+        <div class="header">
+            <h1>🌈 90s Personal Website Generator 🌈</h1>
+            <p class="tagline">✨ Relive the glory days of GeoCities ✨</p>
+        </div>
+
+        <div class="form-container">
+            <h2>Enter Your Info:</h2>
+            <form id="websiteForm">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="text" id="hobby" placeholder="Your Favorite Hobby" required>
+                <input type="text" id="email" placeholder="Your Email (optional)">
+                
+                <label>Choose Your Vibe:</label>
+                <select id="theme">
+                    <option value="neon">Neon Dreams</option>
+                    <option value="space">Space Jam</option>
+                    <option value="rainbow">Rainbow Explosion</option>
+                    <option value="matrix">Matrix Mode</option>
+                    <option value="geocities">GeoCities Classic</option>
+                    <option value="angelfire">Angelfire Special</option>
+                </select>
+
+                <label>
+                    <input type="checkbox" id="addMusic" checked>
+                    Add MIDI Background Music 🎵
+                </label>
+
+                <label>
+                    <input type="checkbox" id="addCursor" checked>
+                    Sparkle Cursor Trail ✨
+                </label>
+
+                <label>
+                    <input type="checkbox" id="addGifs" checked>
+                    Maximum GIFs Mode 🔥
+                </label>
+
+                <button type="submit" class="generate-btn">🚀 GENERATE MY SITE 🚀</button>
+            </form>
+        </div>
+
+        <div id="preview" class="preview-container" style="display: none;">
+            <div class="preview-header">
+                <h2>Your Awesome Website:</h2>
+                <button id="newSite" class="new-btn">Make Another One!</button>
+            </div>
+            <iframe id="previewFrame"></iframe>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

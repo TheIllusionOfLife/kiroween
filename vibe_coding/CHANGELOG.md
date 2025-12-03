@@ -50,11 +50,24 @@
 - WebRing links (point to #)
 - Email validation (basic)
 
-### Next Up (Tier 2)
-- Scrolling status bar text
-- More badge variations
-- Browser detection warnings
-- Canvas-based cursor trail
-- Working guestbook
-- Share functionality
+### Tier 2 Features ✅
+
+**More Visual Effects:**
+- ✅ Spinning emoji animations (360° rotation)
+- ✅ Bouncing emoji animations (up/down)
+- ✅ 10 retro badge variations (Netscape, IE, Java, Anti-Microsoft, etc.)
+- ✅ Badge images with proper 90s styling
+
+**Interactive Enhancements:**
+- ✅ Scrolling status bar text (rotates through messages)
+- ✅ Browser detection with warnings
+- ✅ Dynamic browser name display
+- ✅ More animated GIF dividers throughout
+
+### Next Up (Tier 3)
+- Canvas-based cursor trail with sparkles
+- Working guestbook with Convex
+- Share functionality with URL encoding
 - Template presets
+- Image upload capability
+- More ASCII art variations

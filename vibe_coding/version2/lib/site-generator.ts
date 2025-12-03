@@ -208,18 +208,95 @@ export function generateSiteHTML(config: SiteConfig): string {
             text-align: center;
             margin: 20px 0;
         }
+        
+        .spinning {
+            display: inline-block;
+            animation: spin360 3s linear infinite;
+        }
+        
+        @keyframes spin360 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .bouncing {
+            display: inline-block;
+            animation: bounce 1s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .browser-warning {
+            background: #ffff00;
+            border: 3px solid #ff0000;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .badge-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .badge-img {
+            border: 2px solid #000;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
     ${config.addPopups ? `
     <script>
+        // Welcome popup
         window.addEventListener('load', function() {
             alert('🌟 Welcome to ${config.name}\\'s Awesome Homepage! 🌟');
         });
+        
+        // Exit confirmation
         window.addEventListener('beforeunload', function(e) {
             e.preventDefault();
             e.returnValue = 'Are you sure you want to leave this awesome site?';
             return 'Are you sure you want to leave this awesome site?';
+        });
+        
+        // Scrolling status bar text
+        var statusMessages = [
+            'Welcome to ${config.name}\\'s site!',
+            'Thanks for visiting!',
+            'Don\\'t forget to sign the guestbook!',
+            'Best viewed in Netscape Navigator',
+            'This site is under construction',
+            'Email me at ${config.email || "webmaster@geocities.com"}',
+            '© ${new Date().getFullYear()} ${config.name}'
+        ];
+        var messageIndex = 0;
+        setInterval(function() {
+            window.status = statusMessages[messageIndex];
+            messageIndex = (messageIndex + 1) % statusMessages.length;
+        }, 2000);
+        
+        // Browser detection
+        var browserName = 'Unknown Browser';
+        var userAgent = navigator.userAgent;
+        if (userAgent.indexOf('Firefox') > -1) browserName = 'Mozilla Firefox';
+        else if (userAgent.indexOf('Chrome') > -1) browserName = 'Google Chrome';
+        else if (userAgent.indexOf('Safari') > -1) browserName = 'Safari';
+        else if (userAgent.indexOf('Edge') > -1) browserName = 'Microsoft Edge';
+        
+        window.addEventListener('load', function() {
+            var warning = document.getElementById('browser-warning');
+            if (warning && browserName !== 'Netscape Navigator') {
+                warning.innerHTML = '⚠️ WARNING: You are using ' + browserName + '. This site is optimized for Netscape Navigator 4.0! ⚠️';
+            }
         });
     </script>
     ` : ""}
@@ -238,7 +315,9 @@ export function generateSiteHTML(config: SiteConfig): string {
             </div>
         </div>
         
-        ${config.addGifs ? '<div class="gif-divider">💀 ⚡ 🔥 ⚡ 💀</div>' : ""}
+        ${config.addPopups ? '<div id="browser-warning" class="browser-warning">⚠️ This site is best viewed in Netscape Navigator 4.0 ⚠️</div>' : ""}
+        
+        ${config.addGifs ? '<div class="gif-divider"><span class="spinning">💀</span> <span class="bouncing">⚡</span> <span class="spinning">🔥</span> <span class="bouncing">⚡</span> <span class="spinning">💀</span></div>' : ""}
         <div class="divider"></div>
         
         <div class="content">
@@ -268,10 +347,14 @@ export function generateSiteHTML(config: SiteConfig): string {
                 <li>Listening to my favorite MP3s</li>
             </ul>
             
+            ${config.addGifs ? '<div class="gif-divider"><span class="spinning">⭐</span> <span class="bouncing">🌟</span> <span class="spinning">✨</span> <span class="bouncing">🌟</span> <span class="spinning">⭐</span></div>' : ""}
+            
             <h2>🔗 Cool Links</h2>
             <p><a href="#">My GeoCities Neighborhood</a></p>
             <p><a href="#">Download Winamp Skins</a></p>
             <p><a href="#">My ICQ Number: ${Math.floor(Math.random() * 999999999)}</a></p>
+            <p><a href="#">Join my WebRing!</a></p>
+            <p><a href="#">View my awards!</a></p>
             
             ${config.email ? `
             <h2>📧 Contact Me</h2>
@@ -280,10 +363,19 @@ export function generateSiteHTML(config: SiteConfig): string {
             ` : ""}
         </div>
         
-        <div style="text-align: center; margin: 20px 0;">
-            <div class="badge">NETSCAPE NOW!</div>
-            <div class="badge">IE 4.0 READY</div>
-            <div class="badge">MIDI ENABLED</div>
+        ${config.addGifs ? '<div class="gif-divider"><span class="spinning">🎨</span> <span class="bouncing">🖌️</span> <span class="spinning">🎨</span> <span class="bouncing">🖌️</span> <span class="spinning">🎨</span></div>' : ""}
+        
+        <div class="badge-grid">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23000080' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23fff' font-family='Arial' font-size='10' font-weight='bold'%3ENetscape Now!%3C/text%3E%3C/svg%3E" alt="Netscape Now" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23ff0000' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23fff' font-family='Arial' font-size='10' font-weight='bold'%3EIE 4.0 Ready%3C/text%3E%3C/svg%3E" alt="IE 4.0" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23008000' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23fff' font-family='Arial' font-size='10' font-weight='bold'%3E800x600%3C/text%3E%3C/svg%3E" alt="800x600" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23800080' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23fff' font-family='Arial' font-size='10' font-weight='bold'%3EMIDI Enabled%3C/text%3E%3C/svg%3E" alt="MIDI" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23ff8c00' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='Arial' font-size='10' font-weight='bold'%3EJava Powered%3C/text%3E%3C/svg%3E" alt="Java" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23000' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%2300ff00' font-family='Courier' font-size='10' font-weight='bold'%3EFrames Free%3C/text%3E%3C/svg%3E" alt="Frames Free" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23ffff00' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='Arial' font-size='9' font-weight='bold'%3EAnti-Microsoft%3C/text%3E%3C/svg%3E" alt="Anti-Microsoft" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%2300ffff' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='Arial' font-size='10' font-weight='bold'%3EHTML 3.2%3C/text%3E%3C/svg%3E" alt="HTML 3.2" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23ff1493' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23fff' font-family='Arial' font-size='9' font-weight='bold'%3EGeoCities%3C/text%3E%3C/svg%3E" alt="GeoCities" class="badge-img">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Crect fill='%23666' width='88' height='31'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23fff' font-family='Courier' font-size='9' font-weight='bold'%3EMade w/ Notepad%3C/text%3E%3C/svg%3E" alt="Made with Notepad" class="badge-img">
         </div>
         
         <div style="text-align: center; margin: 20px 0;">
