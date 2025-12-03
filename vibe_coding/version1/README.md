@@ -1,6 +1,10 @@
-# 90s Website Generator - Version 1
+# 90s Website Generator - Version 1 (Baseline)
 
 A hilarious vanilla JavaScript generator that creates authentic 90s-style personal websites.
+
+**⚠️ This version is frozen as a baseline for comparison.**
+
+This is the original implementation from our first iteration. It serves as a reference point to see how much progress we've made in version 2.
 
 ## Features
 
@@ -11,9 +15,9 @@ A hilarious vanilla JavaScript generator that creates authentic 90s-style person
 - All the classic 90s elements:
   - Blinking text
   - Scrolling marquees
-  - Hit counters
-  - Guestbook sections
-  - WebRings
+  - Hit counters (mock)
+  - Guestbook sections (placeholder)
+  - WebRings (placeholder)
   - Construction worker emojis
   - Random "Did You Know?" facts
   - Retro badges
@@ -28,11 +32,20 @@ Simply open `index.html` in your browser. No build tools required!
 - No dependencies
 - Pure 90s vibes
 
-## Next Steps
+## Comparison with Version 2
 
-This is the exploration version. Version 2 will be built with:
-- Next.js 14 + TypeScript
-- Tailwind CSS + shadcn/ui
-- Convex for database
-- Real-time features
-- Gallery and sharing capabilities
+Version 2 adds:
+- Real database with Convex
+- Gallery of all sites
+- Actual visitor tracking
+- Shareable URLs
+- Download functionality
+- Rainbow text effects
+- Animated dividers
+- ASCII art
+- Alert/confirm popups
+- Modern UI with shadcn/ui
+- TypeScript
+- And much more!
+
+See `../version2/` for the enhanced implementation.
