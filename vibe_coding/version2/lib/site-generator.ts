@@ -209,6 +209,80 @@ export function generateSiteHTML(config: SiteConfig): string {
             margin: 20px 0;
         }
         
+        .clock {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 10px 20px;
+            border: 3px outset #666;
+            display: inline-block;
+            font-size: 1.2em;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .new-badge {
+            display: inline-block;
+            background: #ff0000;
+            color: #ffff00;
+            font-weight: bold;
+            padding: 2px 8px;
+            border: 2px solid #ffff00;
+            animation: pulse 1s infinite;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .hover-button {
+            background: #0080ff;
+            color: #fff;
+            border: 3px outset #0080ff;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            margin: 5px;
+            transition: all 0.1s;
+        }
+        
+        .hover-button:hover {
+            background: #ff0080;
+            border-color: #ff0080;
+            transform: scale(1.05);
+        }
+        
+        .hover-button:active {
+            border-style: inset;
+            transform: scale(0.95);
+        }
+        
+        .bouncing-marquee {
+            background: #ffff00;
+            color: #ff0000;
+            padding: 10px;
+            border: 3px solid #000;
+            margin: 20px 0;
+            font-weight: bold;
+            overflow: hidden;
+            height: 40px;
+        }
+        
+        .bouncing-text {
+            display: inline-block;
+            animation: bounce-horizontal 3s linear infinite;
+            white-space: nowrap;
+        }
+        
+        @keyframes bounce-horizontal {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
         .spinning {
             display: inline-block;
             animation: spin360 3s linear infinite;
@@ -254,6 +328,41 @@ export function generateSiteHTML(config: SiteConfig): string {
     </style>
 </head>
 <body>
+    <script>
+        // Digital clock
+        function updateClock() {
+            var now = new Date();
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var seconds = String(now.getSeconds()).padStart(2, '0');
+            var clockElement = document.getElementById('digital-clock');
+            if (clockElement) {
+                clockElement.textContent = hours + ':' + minutes + ':' + seconds;
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // Disable right-click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('Right-clicking is disabled! This is a protected site! 🚫');
+            return false;
+        });
+        
+        // Random page title changes
+        var titles = [
+            '${config.name}\\'s Homepage',
+            'Welcome to ${config.name}\\'s Site!',
+            '✨ ${config.name} ✨',
+            'You are visitor #' + Math.floor(Math.random() * 99999)
+        ];
+        var titleIndex = 0;
+        setInterval(function() {
+            document.title = titles[titleIndex];
+            titleIndex = (titleIndex + 1) % titles.length;
+        }, 3000);
+    </script>
     ${config.addPopups ? `
     <script>
         // Only show popups if not in an iframe (i.e., downloaded version)
@@ -336,26 +445,56 @@ export function generateSiteHTML(config: SiteConfig): string {
    WELCOME TO THE WEB!
             </div>
             
+            <div style="text-align: center; margin: 20px 0;">
+                <div class="clock" id="digital-clock">00:00:00</div>
+                <p style="margin-top: 10px; font-size: 0.9em;">Current Time on Your Computer</p>
+            </div>
+            
             <div class="fun-fact">
                 <strong>💡 DID YOU KNOW?</strong><br>
                 ${randomFact}
             </div>
             
-            <h2>🎨 My Interests</h2>
+            <h2>🎨 My Interests <span class="new-badge">NEW!</span></h2>
             <ul>
                 <li>${config.hobby}</li>
                 <li>Surfing the Information Superhighway</li>
                 <li>Collecting animated GIFs</li>
-                <li>Making cool websites</li>
+                <li>Making cool websites <span class="new-badge">UPDATED!</span></li>
                 <li>Listening to my favorite MP3s</li>
             </ul>
             
+            <div class="bouncing-marquee">
+                <div class="bouncing-text">
+                    ⭐ CHECK OUT MY COOL LINKS BELOW! ⭐ SIGN MY GUESTBOOK! ⭐ COME BACK SOON! ⭐
+                </div>
+            </div>
+            
             ${config.addGifs ? '<div class="gif-divider"><span class="spinning">⭐</span> <span class="bouncing">🌟</span> <span class="spinning">✨</span> <span class="bouncing">🌟</span> <span class="spinning">⭐</span></div>' : ""}
             
-            <h2>🔗 Cool Links</h2>
-            <p><a href="#">My GeoCities Neighborhood</a></p>
-            <p><a href="#">Download Winamp Skins</a></p>
-            <p><a href="#">My ICQ Number: ${Math.floor(Math.random() * 999999999)}</a></p>
+            <h2>🔗 Cool Links <span class="new-badge">HOT!</span></h2>
+            <p><a href="#" class="hover-link">My GeoCities Neighborhood</a></p>
+            <p><a href="#" class="hover-link">Download Winamp Skins</a></p>
+            <p><a href="#" class="hover-link">My ICQ Number: ${Math.floor(Math.random() * 999999999)}</a></p>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="hover-button" onclick="alert('Thanks for clicking! 🎉')">
+                    Click Me!
+                </button>
+                <button class="hover-button" onclick="alert('You found the secret button! 🎊')">
+                    Secret Button
+                </button>
+            </div>
+            
+            <div class="ascii-art">
+    .-""-.
+   /      \\
+  |  o  o  |
+  |   __   |
+   \\  \\/  /
+    '-..-'
+   WEBMASTER
+            </div>
             <p><a href="#">Join my WebRing!</a></p>
             <p><a href="#">View my awards!</a></p>
             
@@ -394,6 +533,11 @@ export function generateSiteHTML(config: SiteConfig): string {
             <p>Last updated: ${config.createdAt ? new Date(config.createdAt).toLocaleString() : new Date().toLocaleString()}</p>
             <p>© ${new Date().getFullYear()} ${config.name}. All rights reserved.</p>
             <p class="blink">⚠️ Best viewed in 800x600 resolution ⚠️</p>
+            <p style="margin-top: 10px;">
+                <span class="new-badge">100% HTML</span>
+                <span class="new-badge">NO FRAMES</span>
+                <span class="new-badge">HAND CODED</span>
+            </p>
         </div>
     </div>
 </body>
