@@ -10,12 +10,18 @@ export const sign = mutation({
     website: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // Simple spam protection: limit message length
-    if (args.message.length > 500) {
-      throw new Error("Message too long! Keep it under 500 characters.");
+    // Validation: check length constraints
+    if (args.name.length < 1) {
+      throw new Error("Name is required!");
     }
     if (args.name.length > 50) {
       throw new Error("Name too long! Keep it under 50 characters.");
+    }
+    if (args.message.length < 1) {
+      throw new Error("Message is required!");
+    }
+    if (args.message.length > 500) {
+      throw new Error("Message too long! Keep it under 500 characters.");
     }
 
     const entryId = await ctx.db.insert("guestbookEntries", {

@@ -37,8 +37,8 @@ export function GeneratorForm() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check if user is signed in
-    if (!isSignedIn) {
+    // Check if user is signed in and user data is loaded
+    if (!isSignedIn || !user) {
       // Guest mode: prompt to sign in
       const shouldSignIn = confirm(
         "🔒 Sign in to save your site!\n\n" +
@@ -71,7 +71,7 @@ export function GeneratorForm() {
     // Save to Convex with userId
     try {
       await createSite({
-        userId: user!.id,
+        userId: user.id,
         name: config.name,
         hobby: config.hobby,
         email: config.email,
@@ -126,6 +126,7 @@ export function GeneratorForm() {
         hobby: preset.config.hobby,
         email: preset.config.email,
         theme: preset.config.theme,
+        addMusic: preset.config.addMusic,
         addCursor: preset.config.addCursor,
         addGifs: preset.config.addGifs,
         addPopups: preset.config.addPopups,

@@ -1,6 +1,16 @@
 import { themes, funFacts } from "./themes";
 import type { SiteConfig } from "./types";
 
+// HTML escaping helper to prevent XSS
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 // Audio generation helpers
 function generateBGMAudio(bgmTrack?: string): string {
   if (!bgmTrack) return '';
@@ -92,8 +102,17 @@ function generateSoundEffects(): string {
 }
 
 export function generateSiteHTML(config: SiteConfig): string {
-  const theme = themes[config.theme];
+  const theme = themes[config.theme] ?? themes["neon"]; // Fallback to neon if invalid theme
   const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
+  
+  // Escape user inputs to prevent XSS
+  const safeName = escapeHtml(config.name);
+  const safeHobby = escapeHtml(config.hobby);
+  const safeEmail = config.email ? escapeHtml(config.email) : undefined;
+  
+  // For inline JavaScript, use JSON.stringify to safely encode strings
+  const jsName = JSON.stringify(config.name);
+  const jsEmail = JSON.stringify(config.email || "webmaster@geocities.com");
   
   // Apply custom colors if provided, otherwise use theme defaults
   const bgColor = config.customColors?.background || theme.bg;
@@ -109,7 +128,7 @@ export function generateSiteHTML(config: SiteConfig): string {
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>${config.name}'s Awesome Homepage!</title>
+    <title>${safeName}'s Awesome Homepage!</title>
     <style>
         body {
             background: ${bgColor};
@@ -443,10 +462,11 @@ export function generateSiteHTML(config: SiteConfig): string {
         });
         
         // Random page title changes
+        var siteName = ${jsName};
         var titles = [
-            '${config.name}\\'s Homepage',
-            'Welcome to ${config.name}\\'s Site!',
-            '✨ ${config.name} ✨',
+            siteName + '\\'s Homepage',
+            'Welcome to ' + siteName + '\\'s Site!',
+            '✨ ' + siteName + ' ✨',
             'You are visitor #' + Math.floor(Math.random() * 99999)
         ];
         var titleIndex = 0;
@@ -461,7 +481,7 @@ export function generateSiteHTML(config: SiteConfig): string {
         if (window.self === window.top) {
             // Welcome popup
             window.addEventListener('load', function() {
-                alert('🌟 Welcome to ${config.name}\\'s Awesome Homepage! 🌟');
+                alert('🌟 Welcome to ' + siteName + '\\'s Awesome Homepage! 🌟');
             });
             
             // Exit confirmation
@@ -473,14 +493,15 @@ export function generateSiteHTML(config: SiteConfig): string {
         }
         
         // Scrolling status bar text
+        var contactEmail = ${jsEmail};
         var statusMessages = [
-            'Welcome to ${config.name}\\'s site!',
+            'Welcome to ' + siteName + '\\'s site!',
             'Thanks for visiting!',
             'Don\\'t forget to sign the guestbook!',
             'Best viewed in Netscape Navigator',
             'This site is under construction',
-            'Email me at ${config.email || "webmaster@geocities.com"}',
-            '© ${new Date().getFullYear()} ${config.name}'
+            'Email me at ' + contactEmail,
+            '© ' + new Date().getFullYear() + ' ' + siteName
         ];
         var messageIndex = 0;
         setInterval(function() {
@@ -508,7 +529,7 @@ export function generateSiteHTML(config: SiteConfig): string {
     ${config.soundEffects ? generateSoundEffects() : ""}
     <div class="container">
         <div class="header">
-            <h1>🌟 Welcome to ${config.name}'s Homepage! 🌟</h1>
+            <h1>🌟 Welcome to ${safeName}'s Homepage! 🌟</h1>
             <p class="blink">✨ UNDER CONSTRUCTION ✨</p>
         </div>
         
@@ -527,8 +548,8 @@ export function generateSiteHTML(config: SiteConfig): string {
         
         <div class="content">
             <h2>👋 About Me</h2>
-            <p>Hi! My name is <strong>${config.addRainbowText ? `<span class="rainbow-text">${config.name}</span>` : config.name}</strong> and this is my personal homepage on the World Wide Web!</p>
-            <p>I love <strong>${config.hobby}</strong> and I made this site to share my interests with the world!</p>
+            <p>Hi! My name is <strong>${config.addRainbowText ? `<span class="rainbow-text">${safeName}</span>` : safeName}</strong> and this is my personal homepage on the World Wide Web!</p>
+            <p>I love <strong>${safeHobby}</strong> and I made this site to share my interests with the world!</p>
             
             <div class="ascii-art">
    _____ _____ _____ 
@@ -550,7 +571,7 @@ export function generateSiteHTML(config: SiteConfig): string {
             
             <h2>🎨 My Interests <span class="new-badge">NEW!</span></h2>
             <ul>
-                <li>${config.hobby}</li>
+                <li>${safeHobby}</li>
                 <li>Surfing the Information Superhighway</li>
                 <li>Collecting animated GIFs</li>
                 <li>Making cool websites <span class="new-badge">UPDATED!</span></li>
@@ -591,9 +612,9 @@ export function generateSiteHTML(config: SiteConfig): string {
             <p><a href="#">Join my WebRing!</a></p>
             <p><a href="#">View my awards!</a></p>
             
-            ${config.email ? `
+            ${safeEmail ? `
             <h2>📧 Contact Me</h2>
-            <p>Email me at: <a href="mailto:${config.email}">${config.email}</a></p>
+            <p>Email me at: <a href="mailto:${encodeURIComponent(config.email || "")}">${safeEmail}</a></p>
             <p class="blink">⚡ I check my email every day! ⚡</p>
             ` : ""}
         </div>
@@ -624,7 +645,7 @@ export function generateSiteHTML(config: SiteConfig): string {
         
         <div style="text-align: center; margin-top: 30px; font-size: 0.9em;">
             <p>Last updated: ${config.createdAt ? new Date(config.createdAt).toLocaleString() : new Date().toLocaleString()}</p>
-            <p>© ${new Date().getFullYear()} ${config.name}. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} ${safeName}. All rights reserved.</p>
             <p class="blink">⚠️ Best viewed in 800x600 resolution ⚠️</p>
             <p style="margin-top: 10px;">
                 <span class="new-badge">100% HTML</span>

@@ -39,15 +39,26 @@ describe('Site Generator', () => {
           (config: SiteConfig) => {
             const html = generateSiteHTML(config);
             
-            // Verify name is included
-            expect(html).toContain(config.name);
+            // Helper function to escape HTML
+            const escapeHtml = (str: string) => str
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
             
-            // Verify hobby is included
-            expect(html).toContain(config.hobby);
+            // Verify name is included (HTML-escaped)
+            const escapedName = escapeHtml(config.name);
+            expect(html).toContain(escapedName);
             
-            // Verify email is included if provided
+            // Verify hobby is included (HTML-escaped)
+            const escapedHobby = escapeHtml(config.hobby);
+            expect(html).toContain(escapedHobby);
+            
+            // Verify email is included if provided (HTML-escaped)
             if (config.email) {
-              expect(html).toContain(config.email);
+              const escapedEmail = escapeHtml(config.email);
+              expect(html).toContain(escapedEmail);
             }
             
             // Verify BGM is included if configured
