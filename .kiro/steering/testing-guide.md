@@ -1,0 +1,387 @@
+---
+inclusion: fileMatch
+fileMatchPattern: "**/*.test.ts"
+---
+
+# Testing Guide - 90s Website Generator
+
+## Testing Philosophy
+
+We use a **dual testing approach**:
+1. **Property-Based Tests** - Verify universal properties across all inputs
+2. **Unit Tests** - Verify specific behaviors and edge cases
+
+Both are essential and complement each other.
+
+## Property-Based Testing with fast-check
+
+### What is Property-Based Testing?
+
+Instead of testing specific examples, we test **properties that should hold for all inputs**.
+
+Example:
+- ❌ Unit test: "generateSiteHTML with name='John' includes 'John'"
+- ✅ Property test: "generateSiteHTML with ANY name includes that name"
+
+### Writing Property Tests
+
+#### 1. Identify the Property
+
+Ask: "What should be true for ALL valid inputs?"
+
+Examples:
+- For any site config, the generated HTML should contain the user's name
+- For any guestbook entry with valid length, it should be accepted
+- For any site, editing and saving should preserve the creation date
+
+#### 2. Generate Random Inputs
+
+Use fast-check arbitraries:
+
+```typescript
+import * as fc from 'fast-check';
+
+// Strings
+fc.string({ minLength: 1, maxLength: 50 })
+fc.emailAddress()
+
+// Numbers
+fc.integer({ min: 0, max: 100 })
+fc.nat()
+
+// Booleans
+fc.boolean()
+
+// Constants
+fc.constantFrom('neon', 'space', 'rainbow')
+
+// Objects
+fc.record({
+  name: fc.string({ minLength: 1 }),
+  age: fc.integer({ min: 0, max: 120 }),
+  email: fc.option(fc.emailAddress()),
+})
+
+// Arrays
+fc.array(fc.string(), { minLength: 1, maxLength: 10 })
+```
+
+#### 3. Write the Property Test
+
+```typescript
+// **Feature: 90s-website-generator, Property N: [Description]**
+it('Property N: [Description]', () => {
+  fc.assert(
+    fc.property(
+      // Generators
+      fc.record({
+        name: fc.string({ minLength: 1, maxLength: 50 }),
+        hobby: fc.string({ minLength: 1, maxLength: 100 }),
+      }),
+      // Test function
+      (config) => {
+        const result = functionUnderTest(config);
+        
+        // Assertions
+        expect(result).toContain(config.name);
+        expect(result).toContain(config.hobby);
+      }
+    ),
+    { numRuns: 100 } // REQUIRED: Run 100 iterations
+  );
+});
+```
+
+### Property Test Patterns
+
+#### Pattern 1: Round-Trip Properties
+"Doing something then undoing it returns to original state"
+
+```typescript
+// **Feature: 90s-website-generator, Property 6: Site persistence round-trip**
+it('Property 6: Site persistence round-trip', async () => {
+  fc.assert(
+    fc.asyncProperty(
+      fc.record({ name: fc.string(), hobby: fc.string() }),
+      async (config) => {
+        // Save
+        const siteId = await saveSite(config);
+        
+        // Retrieve
+        const retrieved = await getSite(siteId);
+        
+        // Should match
+        expect(retrieved.name).toBe(config.name);
+        expect(retrieved.hobby).toBe(config.hobby);
+      }
+    ),
+    { numRuns: 100 }
+  );
+});
+```
+
+#### Pattern 2: Invariant Properties
+"Something that should always be true"
+
+```typescript
+// **Feature: 90s-website-generator, Property 7: New sites initialize with zero views**
+it('Property 7: New sites initialize with zero views', async () => {
+  fc.assert(
+    fc.asyncProperty(
+      fc.record({ name: fc.string(), hobby: fc.string() }),
+      async (config) => {
+        const siteId = await saveSite(config);
+        const site = await getSite(siteId);
+        
+        // Invariant: new sites always have 0 views
+        expect(site.views).toBe(0);
+      }
+    ),
+    { numRuns: 100 }
+  );
+});
+```
+
+#### Pattern 3: Validation Properties
+"Valid inputs are accepted, invalid inputs are rejected"
+
+```typescript
+// **Feature: 90s-website-generator, Property 10: Guestbook validation enforces length limits**
+it('Property 10: Guestbook validation enforces length limits', () => {
+  fc.assert(
+    fc.property(
+      fc.record({
+        name: fc.string(),
+        message: fc.string(),
+      }),
+      (entry) => {
+        const nameValid = entry.name.length >= 1 && entry.name.length <= 50;
+        const messageValid = entry.message.length >= 1 && entry.message.length <= 500;
+        const shouldAccept = nameValid && messageValid;
+        
+        if (shouldAccept) {
+          expect(() => validateGuestbookEntry(entry)).not.toThrow();
+        } else {
+          expect(() => validateGuestbookEntry(entry)).toThrow();
+        }
+      }
+    ),
+    { numRuns: 100 }
+  );
+});
+```
+
+#### Pattern 4: Metamorphic Properties
+"Relationship between inputs and outputs"
+
+```typescript
+// **Feature: 90s-website-generator, Property 9: View count increments correctly**
+it('Property 9: View count increments correctly', async () => {
+  fc.assert(
+    fc.asyncProperty(
+      fc.record({ name: fc.string(), hobby: fc.string() }),
+      fc.integer({ min: 1, max: 10 }),
+      async (config, viewCount) => {
+        const siteId = await saveSite(config);
+        
+        // View N times
+        for (let i = 0; i < viewCount; i++) {
+          await incrementViews(siteId);
+        }
+        
+        const site = await getSite(siteId);
+        
+        // Views should equal number of increments
+        expect(site.views).toBe(viewCount);
+      }
+    ),
+    { numRuns: 100 }
+  );
+});
+```
+
+## Unit Testing
+
+### When to Use Unit Tests
+
+- Testing specific edge cases
+- Testing error conditions
+- Testing UI interactions
+- Testing integration between components
+
+### Unit Test Structure
+
+```typescript
+describe('Component/Function Name', () => {
+  describe('specific behavior', () => {
+    it('should do something specific', () => {
+      // Arrange
+      const input = setupTestData();
+      
+      // Act
+      const result = functionUnderTest(input);
+      
+      // Assert
+      expect(result).toBe(expectedValue);
+    });
+  });
+});
+```
+
+### Example Unit Tests
+
+```typescript
+describe('generateSiteHTML', () => {
+  it('includes user name in title', () => {
+    const config = { name: 'Test User', hobby: 'Testing', theme: 'neon' };
+    const html = generateSiteHTML(config);
+    expect(html).toContain('<title>Test User');
+  });
+  
+  it('excludes popups when addPopups is false', () => {
+    const config = { name: 'Test', hobby: 'Test', theme: 'neon', addPopups: false };
+    const html = generateSiteHTML(config);
+    expect(html).not.toContain('alert(');
+  });
+  
+  it('handles empty email gracefully', () => {
+    const config = { name: 'Test', hobby: 'Test', theme: 'neon', email: '' };
+    const html = generateSiteHTML(config);
+    expect(html).not.toContain('Contact Me');
+  });
+});
+```
+
+## Test Organization
+
+### File Structure
+```
+lib/
+├── site-generator.ts
+└── __tests__/
+    ├── site-generator.test.ts      # Property + unit tests
+    ├── site-generator.unit.test.ts # Unit tests only (if needed)
+    └── site-generator.pbt.test.ts  # Property tests only (if needed)
+```
+
+### Test File Template
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import * as fc from 'fast-check';
+import { functionUnderTest } from '../module';
+
+describe('Module Name', () => {
+  // Property-Based Tests
+  describe('Property-Based Tests', () => {
+    // **Feature: 90s-website-generator, Property N: Description**
+    it('Property N: Description', () => {
+      fc.assert(
+        fc.property(
+          // generators
+          (input) => {
+            // test
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+  
+  // Unit Tests
+  describe('Unit Tests', () => {
+    describe('specific behavior', () => {
+      it('should handle specific case', () => {
+        // test
+      });
+    });
+  });
+});
+```
+
+## Running Tests
+
+```bash
+# Run all tests once
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with UI
+npm run test:ui
+
+# Run specific test file
+npm test site-generator.test.ts
+
+# Run tests with coverage
+npm test -- --coverage
+```
+
+## Test Coverage Goals
+
+- **Property Tests**: All correctness properties from design.md
+- **Unit Tests**: 80%+ code coverage
+- **Integration Tests**: Critical user flows
+
+## Common Pitfalls
+
+### ❌ Don't: Test implementation details
+```typescript
+// Bad - testing internal state
+expect(component.state.value).toBe('test');
+```
+
+### ✅ Do: Test observable behavior
+```typescript
+// Good - testing what user sees
+expect(screen.getByText('test')).toBeInTheDocument();
+```
+
+### ❌ Don't: Use specific values in property tests
+```typescript
+// Bad - defeats the purpose of property testing
+fc.assert(
+  fc.property(fc.constant('John'), (name) => {
+    // ...
+  })
+);
+```
+
+### ✅ Do: Use generators for all inputs
+```typescript
+// Good - tests all possible names
+fc.assert(
+  fc.property(fc.string({ minLength: 1 }), (name) => {
+    // ...
+  })
+);
+```
+
+## Debugging Failed Property Tests
+
+When a property test fails, fast-check provides a **minimal failing example**:
+
+```
+Property failed after 47 tests
+Counterexample: { name: "A", hobby: "" }
+```
+
+This is the **smallest input** that causes the failure. Use it to:
+1. Understand why it fails
+2. Fix the bug
+3. Optionally add it as a unit test
+
+## Test Maintenance
+
+- **Run tests before committing**
+- **Fix failing tests immediately**
+- **Update tests when requirements change**
+- **Remove obsolete tests**
+- **Keep tests simple and readable**
+
+## Resources
+
+- [fast-check documentation](https://fast-check.dev/)
+- [Vitest documentation](https://vitest.dev/)
+- [Property-Based Testing Guide](https://fsharpforfunandprofit.com/posts/property-based-testing/)
