@@ -7,7 +7,7 @@ inclusion: always
 ## Tech Stack
 
 ### Frontend
-- **Next.js 14** - App Router, React Server Components
+- **Next.js 16** - App Router, React Server Components
 - **React 19** - Latest features and performance
 - **TypeScript** - Full type safety
 - **Tailwind CSS** - Utility-first styling

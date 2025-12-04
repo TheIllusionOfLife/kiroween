@@ -17,7 +17,7 @@ The 90s Website Generator is a full-stack web application that enables users to 
 
 ### Technical Foundation
 
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+- **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS, shadcn/ui
 - **Backend**: Convex (real-time database with reactive queries)
 - **Authentication**: Clerk (GitHub OAuth)
 - **State Management**: Zustand (client state), Convex (server state)
@@ -929,7 +929,7 @@ test('Property 10: Guestbook validation enforces length limits', () => {
 
 ### Technology Choices
 
-**Why Next.js 14 App Router?**
+**Why Next.js 16 App Router?**
 - Server components for better performance
 - Built-in routing and layouts
 - Excellent TypeScript support

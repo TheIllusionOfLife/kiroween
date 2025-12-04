@@ -4,7 +4,7 @@ Modern implementation of the 90s website generator using cutting-edge tech stack
 
 ## Tech Stack
 
-- **Next.js 14** (App Router) + TypeScript
+- **Next.js 16** (App Router) + TypeScript
 - **Tailwind CSS** + **shadcn/ui** for modern UI components
 - **Convex** for real-time database and backend
 - **Vercel** for deployment

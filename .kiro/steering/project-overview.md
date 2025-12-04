@@ -11,7 +11,7 @@ This is a fun, nostalgic web application that generates authentic 1990s-style pe
 ## Tech Stack
 
 **Frontend:**
-- Next.js 14 (App Router)
+- Next.js 16 (App Router)
 - TypeScript
 - Tailwind CSS + shadcn/ui
 - Zustand (client state)
