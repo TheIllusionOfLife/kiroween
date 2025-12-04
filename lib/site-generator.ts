@@ -1,28 +1,5 @@
 import { themes, funFacts } from "./themes";
-
-export interface SiteConfig {
-  name: string;
-  hobby: string;
-  email?: string;
-  theme: string;
-  addMusic: boolean;
-  addCursor: boolean;
-  addGifs: boolean;
-  addPopups?: boolean;
-  addRainbowText?: boolean;
-  bgmTrack?: string;
-  soundEffects?: boolean;
-  customFonts?: {
-    heading?: string;
-    body?: string;
-  };
-  customColors?: {
-    background?: string;
-    text?: string;
-    links?: string;
-  };
-  createdAt?: number;
-}
+import type { SiteConfig } from "./types";
 
 // Audio generation helpers
 function generateBGMAudio(bgmTrack?: string): string {

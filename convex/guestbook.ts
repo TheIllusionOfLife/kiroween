@@ -51,3 +51,28 @@ export const getEntriesCount = query({
     return entries.length;
   },
 });
+
+// Batch fetch guestbook counts for multiple sites
+export const getBatchEntriesCounts = query({
+  args: { siteIds: v.array(v.id("sites")) },
+  handler: async (ctx, args) => {
+    // Fetch all guestbook entries for the given site IDs
+    const allEntries = await ctx.db
+      .query("guestbookEntries")
+      .collect();
+    
+    // Count entries per site
+    const counts: Record<string, number> = {};
+    for (const siteId of args.siteIds) {
+      counts[siteId] = 0;
+    }
+    
+    for (const entry of allEntries) {
+      if (entry.siteId in counts) {
+        counts[entry.siteId]++;
+      }
+    }
+    
+    return counts;
+  },
+});

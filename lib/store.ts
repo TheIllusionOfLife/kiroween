@@ -1,35 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-export interface SiteConfig {
-  // Basic info
-  name: string;
-  hobby: string;
-  email?: string;
-  theme: string;
-  
-  // Feature toggles
-  addMusic: boolean;
-  addCursor: boolean;
-  addGifs: boolean;
-  addPopups: boolean;
-  addRainbowText: boolean;
-  
-  // Audio settings
-  bgmTrack?: string;
-  soundEffects: boolean;
-  
-  // Customization (for edit mode)
-  customFonts?: {
-    heading?: string;
-    body?: string;
-  };
-  customColors?: {
-    background?: string;
-    text?: string;
-    links?: string;
-  };
-}
+import { useRef, useCallback } from 'react';
+import type { SiteConfig } from './types';
 
 interface GeneratorState {
   // Form state
@@ -118,27 +90,26 @@ export const useGeneratorStore = create<GeneratorState>()(
 );
 
 // Debounced preview update hook
-let previewTimeout: NodeJS.Timeout | null = null;
-
 export function useDebouncedPreview(
   generateFn: (config: SiteConfig) => string,
   delay: number = 500
 ) {
   const { config, setPreviewHtml, setIsGenerating } = useGeneratorStore();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  const updatePreview = () => {
-    if (previewTimeout) {
-      clearTimeout(previewTimeout);
+  const updatePreview = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
     
     setIsGenerating(true);
     
-    previewTimeout = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       const html = generateFn(config);
       setPreviewHtml(html);
       setIsGenerating(false);
     }, delay);
-  };
+  }, [config, generateFn, delay, setPreviewHtml, setIsGenerating]);
   
   return updatePreview;
 }

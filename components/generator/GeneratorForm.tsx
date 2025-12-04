@@ -94,6 +94,16 @@ export function GeneratorForm() {
     }
   };
 
+  const sanitizeFilename = (name: string): string => {
+    return name
+      .replace(/[^a-zA-Z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+      .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      .toLowerCase() // Convert to lowercase
+      .slice(0, 50) || 'site'; // Limit length and provide fallback
+  };
+
   const handleDownload = () => {
     if (!previewHtml) return;
     
@@ -101,7 +111,7 @@ export function GeneratorForm() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${config.name.replace(/\s+/g, "-")}-90s-site.html`;
+    a.download = `${sanitizeFilename(config.name)}-90s-site.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

@@ -1,30 +1,11 @@
+import type { SiteConfig } from "./types";
+
 export interface PresetConfig {
   id: string;
   name: string;
   description: string;
   emoji: string;
-  config: {
-    name: string;
-    hobby: string;
-    email: string;
-    theme: string;
-    addMusic: boolean;
-    addCursor: boolean;
-    addGifs: boolean;
-    addPopups: boolean;
-    addRainbowText: boolean;
-    bgmTrack?: string;
-    soundEffects: boolean;
-    customFonts?: {
-      heading?: string;
-      body?: string;
-    };
-    customColors?: {
-      background?: string;
-      text?: string;
-      links?: string;
-    };
-  };
+  config: SiteConfig;
 }
 
 export const presets: PresetConfig[] = [

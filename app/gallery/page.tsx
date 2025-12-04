@@ -4,20 +4,21 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { Id } from "@/convex/_generated/dataModel";
 import { useUser, SignInButton } from "@clerk/nextjs";
 import { Header } from "@/components/Header";
-
-function GuestbookCount({ siteId }: { siteId: Id<"sites"> }) {
-  const count = useQuery(api.guestbook.getEntriesCount, { siteId });
-  return <span>{count ?? 0} entries 📝</span>;
-}
 
 export default function GalleryPage() {
   const { isSignedIn, user } = useUser();
   const sites = useQuery(
     api.sites.getUserSites,
     isSignedIn && user ? { userId: user.id } : "skip"
+  );
+  
+  // Batch fetch guestbook counts for all sites
+  const siteIds = sites?.map((site) => site._id) ?? [];
+  const guestbookCounts = useQuery(
+    api.guestbook.getBatchEntriesCounts,
+    siteIds.length > 0 ? { siteIds } : "skip"
   );
 
   // Guest mode: Show sign-in prompt
@@ -136,7 +137,8 @@ export default function GalleryPage() {
                       <strong>Views:</strong> {site.views} 👀
                     </p>
                     <p className="text-sm">
-                      <strong>Guestbook:</strong> <GuestbookCount siteId={site._id} />
+                      <strong>Guestbook:</strong>{" "}
+                      <span>{guestbookCounts?.[site._id] ?? 0} entries 📝</span>
                     </p>
                     <p className="text-xs text-gray-500">
                       Created: {new Date(site.createdAt).toLocaleDateString()}
