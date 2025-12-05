@@ -112,37 +112,49 @@ export const updateSite = mutation({
     })),
   },
   handler: async (ctx, args) => {
-    // Get existing site to verify ownership and preserve metadata
-    const existing = await ctx.db.get(args.siteId);
-    
-    if (!existing) {
-      throw new Error("Site not found");
+    try {
+      // Get existing site to verify ownership and preserve metadata
+      const existing = await ctx.db.get(args.siteId);
+      
+      if (!existing) {
+        throw new Error("Site not found");
+      }
+      
+      // Verify user owns the site (Requirement 19.1)
+      if (existing.userId !== args.userId) {
+        throw new Error("Unauthorized: You can only edit your own sites");
+      }
+      
+      // Validate required fields using shared validation (Requirement 19.3, 19.4, 19.5, 19.6, 19.7, 19.8)
+      // Pass only the fields that validation expects (exclude siteId)
+      validateSiteConfig({
+        userId: args.userId,
+        name: args.name,
+        hobby: args.hobby,
+        theme: args.theme,
+      });
+      
+      // Extract fields to update (exclude siteId and userId which are not stored)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { siteId, userId, ...updateFields } = args;
+      
+      // Filter out undefined values to avoid Convex patch issues
+      const cleanedFields = Object.fromEntries(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        Object.entries(updateFields).filter(([_key, value]) => value !== undefined)
+      );
+      
+      // Update site configuration while preserving metadata (Requirements 19.9, 19.10)
+      // Note: ctx.db.patch only updates provided fields, so createdAt and views are automatically preserved
+      await ctx.db.patch(args.siteId, {
+        ...cleanedFields,
+        updatedAt: Date.now(),
+      });
+      
+      return args.siteId;
+    } catch (error) {
+      console.error("updateSite error:", error);
+      throw error;
     }
-    
-    // Verify user owns the site (Requirement 19.1)
-    if (existing.userId !== args.userId) {
-      throw new Error("Unauthorized: You can only edit your own sites");
-    }
-    
-    // Validate required fields using shared validation (Requirement 19.3, 19.4, 19.5, 19.6, 19.7, 19.8)
-    // Pass only the fields that validation expects (exclude siteId)
-    validateSiteConfig({
-      userId: args.userId,
-      name: args.name,
-      hobby: args.hobby,
-      theme: args.theme,
-    });
-    
-    // Extract fields to update (exclude siteId and userId which are not stored)
-    const { siteId, userId, ...updateFields } = args;
-    
-    // Update site configuration while preserving metadata (Requirements 19.9, 19.10)
-    // Note: ctx.db.patch only updates provided fields, so createdAt and views are automatically preserved
-    await ctx.db.patch(args.siteId, {
-      ...updateFields,
-      updatedAt: Date.now(),
-    });
-    
-    return args.siteId;
   },
 });
