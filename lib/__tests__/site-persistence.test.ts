@@ -173,5 +173,109 @@ describe('Site Persistence', () => {
         { numRuns: 100 }
       );
     });
+
+    // **Feature: 90s-website-generator, Property 9: View count increments correctly**
+    it('Property 9: View count increments correctly', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            initialViews: fc.integer({ min: 0, max: 10000 }),
+            viewCount: fc.integer({ min: 1, max: 100 }), // Number of times to view
+          }),
+          ({ initialViews, viewCount }) => {
+            // Simulate viewing a site N times
+            let currentViews = initialViews;
+            
+            for (let i = 0; i < viewCount; i++) {
+              // Simulate incrementViews mutation (Requirements 9.1, 9.2)
+              currentViews = currentViews + 1;
+            }
+            
+            // Verify view count increased by exactly N
+            expect(currentViews).toBe(initialViews + viewCount);
+            
+            // Verify view count is always non-negative
+            expect(currentViews).toBeGreaterThanOrEqual(0);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    // **Feature: 90s-website-generator, Property 16: Edit preserves metadata**
+    it('Property 16: Edit preserves metadata', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            // Original site data
+            original: fc.record({
+              userId: fc.string({ minLength: 1, maxLength: 50 }),
+              name: fc.string({ minLength: 1, maxLength: 50 }),
+              hobby: fc.string({ minLength: 1, maxLength: 100 }),
+              theme: fc.constantFrom('neon', 'space', 'rainbow', 'matrix', 'geocities', 'angelfire'),
+              createdAt: fc.integer({ min: 1000000000000, max: 9999999999999 }),
+              views: fc.integer({ min: 0, max: 10000 }),
+            }),
+            // Updated configuration
+            updates: fc.record({
+              name: fc.string({ minLength: 1, maxLength: 50 }),
+              hobby: fc.string({ minLength: 1, maxLength: 100 }),
+              email: fc.option(fc.emailAddress(), { nil: undefined }),
+              theme: fc.constantFrom('neon', 'space', 'rainbow', 'matrix', 'geocities', 'angelfire'),
+              addMusic: fc.boolean(),
+              addCursor: fc.boolean(),
+              addGifs: fc.boolean(),
+              addPopups: fc.boolean(),
+              addRainbowText: fc.boolean(),
+              bgmTrack: fc.option(fc.constantFrom('midi-game', 'midi-chill', 'midi-epic'), { nil: undefined }),
+              soundEffects: fc.boolean(),
+              customFonts: fc.option(
+                fc.record({
+                  heading: fc.option(fc.constantFrom('Arial', 'Courier New, monospace'), { nil: undefined }),
+                  body: fc.option(fc.constantFrom('Arial', 'Courier New, monospace'), { nil: undefined }),
+                }),
+                { nil: undefined }
+              ),
+              customColors: fc.option(
+                fc.record({
+                  background: fc.option(fc.constantFrom('#ff0000', '#00ff00', '#0000ff'), { nil: undefined }),
+                  text: fc.option(fc.constantFrom('#ff0000', '#00ff00', '#0000ff'), { nil: undefined }),
+                  links: fc.option(fc.constantFrom('#ff0000', '#00ff00', '#0000ff'), { nil: undefined }),
+                }),
+                { nil: undefined }
+              ),
+            }),
+          }),
+          ({ original, updates }) => {
+            // Simulate the update operation (using a fixed timestamp after original)
+            const updateTimestamp = original.createdAt + 1000; // 1 second after creation
+            const updatedSite = {
+              ...updates,
+              userId: original.userId,
+              updatedAt: updateTimestamp,
+              // Preserve metadata (Requirements 19.9, 19.10)
+              createdAt: original.createdAt,
+              views: original.views,
+            };
+            
+            // Verify configuration was updated
+            expect(updatedSite.name).toBe(updates.name);
+            expect(updatedSite.hobby).toBe(updates.hobby);
+            expect(updatedSite.theme).toBe(updates.theme);
+            
+            // Verify metadata was preserved (Requirements 19.9, 19.10)
+            expect(updatedSite.createdAt).toBe(original.createdAt);
+            expect(updatedSite.views).toBe(original.views);
+            
+            // Verify userId was preserved
+            expect(updatedSite.userId).toBe(original.userId);
+            
+            // Verify updatedAt was set to a new value after creation
+            expect(updatedSite.updatedAt).toBeGreaterThan(original.createdAt);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
   });
 });

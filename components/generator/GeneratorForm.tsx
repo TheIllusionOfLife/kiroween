@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import type { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,8 +23,9 @@ import { api } from "@/convex/_generated/api";
 import { useUser, SignInButton } from "@clerk/nextjs";
 
 export function GeneratorForm() {
-  const { config, updateConfig, previewHtml, setPreviewHtml } = useGeneratorStore();
+  const { config, updateConfig, previewHtml, setPreviewHtml, isEditMode, editingSiteId, exitEditMode } = useGeneratorStore();
   const saveSite = useMutation(api.sites.saveSite);
+  const updateSite = useMutation(api.sites.updateSite);
   const { isSignedIn, user } = useUser();
 
   // Generate preview whenever config changes
@@ -68,31 +70,31 @@ export function GeneratorForm() {
       return;
     }
 
-    // Save to Convex with userId
+    // Save or update to Convex with userId
     try {
       if (!user) {
         alert("Unable to save: user information not loaded. Please try again.");
         return;
       }
       
-      await saveSite({
-        userId: user.id,
-        name: config.name,
-        hobby: config.hobby,
-        email: config.email,
-        theme: config.theme,
-        addMusic: config.addMusic,
-        addCursor: config.addCursor,
-        addGifs: config.addGifs,
-        addPopups: config.addPopups,
-        addRainbowText: config.addRainbowText,
-        bgmTrack: config.bgmTrack,
-        soundEffects: config.soundEffects,
-        customFonts: config.customFonts,
-        customColors: config.customColors,
-        createdAt: Date.now(),
-      });
-      alert("Site saved successfully! Check your gallery to view it.");
+      if (isEditMode && editingSiteId) {
+        // Update existing site (Requirements 19.3-19.10)
+        await updateSite({
+          siteId: editingSiteId as Id<"sites">,
+          userId: user.id,
+          ...config,
+        });
+        alert("Site updated successfully!");
+        exitEditMode(); // Exit edit mode after successful update
+      } else {
+        // Create new site
+        await saveSite({
+          userId: user.id,
+          ...config,
+          createdAt: Date.now(),
+        });
+        alert("Site saved successfully! Check your gallery to view it.");
+      }
     } catch (error) {
       console.error("Failed to save site:", error);
       alert("Failed to save site. Please try again.");
@@ -147,12 +149,36 @@ export function GeneratorForm() {
   return (
     <div className="space-y-8">
       {/* Preset Selector */}
-      <Card className="border-4 border-yellow-400 shadow-2xl">
-        <CardHeader className="bg-gradient-to-r from-yellow-400 to-orange-500">
-          <CardTitle className="text-white text-2xl">
-            🚀 Quick Start Templates
-          </CardTitle>
-        </CardHeader>
+      {isEditMode && (
+        <Card className="border-4 border-blue-400 shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-blue-400 to-blue-600">
+            <CardTitle className="text-white text-2xl flex justify-between items-center">
+              <span>✏️ Edit Mode</span>
+              <Button
+                type="button"
+                onClick={exitEditMode}
+                variant="secondary"
+                className="text-sm"
+              >
+                Cancel Edit
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <p className="text-center text-gray-700">
+              You are editing an existing site. Make your changes and click "Update Site" to save.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+      
+      {!isEditMode && (
+        <Card className="border-4 border-yellow-400 shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-yellow-400 to-orange-500">
+            <CardTitle className="text-white text-2xl">
+              🚀 Quick Start Templates
+            </CardTitle>
+          </CardHeader>
         <CardContent className="pt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {presets.map((preset) => (
@@ -176,6 +202,7 @@ export function GeneratorForm() {
           </p>
         </CardContent>
       </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="border-4 border-purple-600 shadow-2xl">
@@ -432,7 +459,7 @@ export function GeneratorForm() {
                     type="submit"
                     className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-lg py-6"
                   >
-                    💾 SAVE SITE
+                    {isEditMode ? '✏️ UPDATE SITE' : '💾 SAVE SITE'}
                   </Button>
                 ) : (
                   <SignInButton mode="modal">

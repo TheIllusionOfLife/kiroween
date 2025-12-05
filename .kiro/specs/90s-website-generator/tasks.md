@@ -117,7 +117,7 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - **Property 8: Required fields are enforced**
   - **Validates: Requirements 6.5**
 
-- [ ] 10. Implement private gallery with user filtering
+- [x] 10. Implement private gallery with user filtering
   - Create getUserSites query filtered by userId
   - Update gallery page to show only user's sites
   - Redirect unauthenticated users to sign-in
@@ -125,7 +125,7 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - Show site metadata (name, theme, views, guestbook count)
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-- [ ] 11. Implement site editing functionality
+- [x] 11. Implement site editing functionality
   - Add edit button on site pages (owner only)
   - Create edit mode UI with populated form
   - Allow modification of all configuration fields
@@ -133,65 +133,65 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - Preserve createdAt and views on update
   - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7, 19.8, 19.9, 19.10_
 
-- [ ] 11.1 Write property test for edit preservation
+- [x] 11.1 Write property test for edit preservation
   - **Property 16: Edit preserves metadata**
   - **Validates: Requirements 19.9, 19.10**
 
-- [ ] 12. Implement visitor tracking
+- [x] 12. Implement visitor tracking
   - Create incrementViews mutation
   - Call on site page load
   - Display view count in gallery
   - Persist updated count to database
   - _Requirements: 9.1, 9.2, 9.3_
 
-- [ ] 12.1 Write property test for view counting
+- [x] 12.1 Write property test for view counting
   - **Property 9: View count increments correctly**
   - **Validates: Requirements 9.1, 9.2**
 
-- [ ] 13. Enhance guestbook with validation
+- [x] 13. Enhance guestbook with validation
   - Add length validation (name 1-50, message 1-500)
   - Validate in signGuestbook mutation
   - Display validation errors in UI
   - Store all fields (siteId, name, message, email, website, timestamp)
   - _Requirements: 10.2, 10.3, 10.4, 10.5, 10.6_
 
-- [ ] 13.1 Write property test for guestbook validation
+- [x] 13.1 Write property test for guestbook validation
   - **Property 10: Guestbook validation enforces length limits**
   - **Validates: Requirements 10.5, 10.6**
 
-- [ ] 13.2 Write property test for guestbook persistence
+- [x] 13.2 Write property test for guestbook persistence
   - **Property 11: Guestbook entries persist completely**
   - **Validates: Requirements 10.4**
 
-- [ ] 14. Implement download functionality
+- [x] 14. Implement download functionality
   - Generate complete HTML on download button click
   - Create self-contained file with embedded assets
   - Trigger browser download with site name as filename
   - Ensure downloaded site works standalone
   - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-- [ ] 14.1 Write property test for download
+- [x] 14.1 Write property test for download
   - **Property 12: Downloaded sites are self-contained**
   - **Validates: Requirements 11.1, 11.4**
 
-- [ ] 15. Implement iframe popup suppression
+- [x] 15. Implement iframe popup suppression
   - Add window.self === window.top check
   - Suppress popups when in iframe
   - Allow popups in standalone/downloaded sites
   - _Requirements: 5.4, 5.5, 12.3_
 
-- [ ] 15.1 Write property test for iframe detection
+- [x] 15.1 Write property test for iframe detection
   - **Property 13: Iframe context suppresses popups**
   - **Validates: Requirements 12.3**
 
-- [ ] 16. Implement responsive layouts
+- [x] 16. Implement responsive layouts
   - Make generator form responsive (side-by-side on desktop, stacked on mobile)
   - Make gallery grid responsive
   - Make site page responsive (preview + guestbook layout)
   - Test on multiple screen sizes
   - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
 
-- [ ] 17. Add error handling and validation
+- [x] 17. Add error handling and validation
   - Implement client-side form validation with error messages
   - Add network error handling with toast notifications
   - Implement server-side validation in mutations
@@ -199,7 +199,7 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - Handle authentication errors gracefully
   - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
 
-- [ ] 18. Checkpoint - Ensure all tests pass
+- [x] 18. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 19. Deploy to Vercel

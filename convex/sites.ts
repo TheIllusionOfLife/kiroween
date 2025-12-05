@@ -85,3 +85,58 @@ export const incrementViews = mutation({
     }
   },
 });
+
+export const updateSite = mutation({
+  args: {
+    siteId: v.id("sites"),
+    userId: v.string(),
+    name: v.string(),
+    hobby: v.string(),
+    email: v.optional(v.string()),
+    theme: v.string(),
+    addMusic: v.boolean(),
+    addCursor: v.boolean(),
+    addGifs: v.boolean(),
+    addPopups: v.optional(v.boolean()),
+    addRainbowText: v.optional(v.boolean()),
+    bgmTrack: v.optional(v.string()),
+    soundEffects: v.boolean(),
+    customFonts: v.optional(v.object({
+      heading: v.optional(v.string()),
+      body: v.optional(v.string()),
+    })),
+    customColors: v.optional(v.object({
+      background: v.optional(v.string()),
+      text: v.optional(v.string()),
+      links: v.optional(v.string()),
+    })),
+  },
+  handler: async (ctx, args) => {
+    // Get existing site to verify ownership and preserve metadata
+    const existing = await ctx.db.get(args.siteId);
+    
+    if (!existing) {
+      throw new Error("Site not found");
+    }
+    
+    // Verify user owns the site (Requirement 19.1)
+    if (existing.userId !== args.userId) {
+      throw new Error("Unauthorized: You can only edit your own sites");
+    }
+    
+    // Validate required fields using shared validation (Requirement 19.3, 19.4, 19.5, 19.6, 19.7, 19.8)
+    validateSiteConfig(args);
+    
+    // Extract fields to update (exclude siteId and userId which are not stored)
+    const { siteId, userId, ...updateFields } = args;
+    
+    // Update site configuration while preserving metadata (Requirements 19.9, 19.10)
+    // Note: ctx.db.patch only updates provided fields, so createdAt and views are automatically preserved
+    await ctx.db.patch(args.siteId, {
+      ...updateFields,
+      updatedAt: Date.now(),
+    });
+    
+    return args.siteId;
+  },
+});

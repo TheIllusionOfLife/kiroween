@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useRef, useCallback, useEffect } from 'react';
 import type { SiteConfig } from './types';
+import type { Id } from '../convex/_generated/dataModel';
 
 interface GeneratorState {
   // Form state
@@ -9,7 +10,7 @@ interface GeneratorState {
   
   // UI state
   isEditMode: boolean;
-  editingSiteId?: string;
+  editingSiteId?: Id<"sites">;
   previewHtml: string;
   isGenerating: boolean;
   
@@ -19,7 +20,7 @@ interface GeneratorState {
   resetConfig: () => void;
   setPreviewHtml: (html: string) => void;
   setIsGenerating: (isGenerating: boolean) => void;
-  enterEditMode: (siteId: string, config: SiteConfig) => void;
+  enterEditMode: (siteId: Id<"sites">, config: SiteConfig) => void;
   exitEditMode: () => void;
 }
 
