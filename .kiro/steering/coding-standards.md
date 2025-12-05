@@ -304,7 +304,32 @@ const processedData = useMemo(() => {
 </button>
 ```
 
-## Git Commit Messages
+## Git Workflow & Commit Messages
+
+### ⚠️ CRITICAL RULE: Never Push to Main
+
+**ALL changes MUST go through Pull Requests. NO EXCEPTIONS.**
+
+```bash
+# ❌ FORBIDDEN - NEVER DO THIS
+git checkout main
+git push origin main
+
+# ✅ REQUIRED - ALWAYS DO THIS
+git checkout -b fix/description
+git add .
+git commit -m "fix: description"
+git push origin fix/description
+gh pr create --title "Fix: Description" --body "Details"
+```
+
+**Why this rule exists:**
+- Ensures CI/CD checks pass before deployment
+- Prevents breaking production
+- Allows code review
+- Maintains clean deployment history
+
+### Commit Message Format
 
 Format: `<type>: <description>`
 
