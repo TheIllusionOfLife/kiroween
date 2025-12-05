@@ -79,10 +79,12 @@ export function GeneratorForm() {
       
       if (isEditMode && editingSiteId) {
         // Update existing site (Requirements 19.3-19.10)
+        // Exclude createdAt from config as it's not part of updateSite args
+        const { createdAt, ...updateData } = config;
         await updateSite({
           siteId: editingSiteId as Id<"sites">,
           userId: user.id,
-          ...config,
+          ...updateData,
         });
         alert("Site updated successfully!");
         exitEditMode(); // Exit edit mode after successful update
