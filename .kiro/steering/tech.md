@@ -137,26 +137,15 @@ npx convex import --table sites data.jsonl
 
 ### Git Workflow
 
-**⚠️ CRITICAL: NEVER push directly to main branch!**
+**See "⚠️ CRITICAL: Git Workflow Rules" section above for complete details.**
 
-```bash
-# ✅ CORRECT: Create feature branch
-git checkout -b feat/feature-name
-
-# ✅ CORRECT: Commit with conventional format
-git commit -m "feat: add feature description"
-
-# ✅ CORRECT: Push to feature branch
-git push origin feat/feature-name
-
-# ✅ CORRECT: Create Pull Request (REQUIRED)
-gh pr create --title "feat: Feature Name" --body "Description of changes"
-
-# ❌ WRONG: NEVER do this
-git push origin main  # FORBIDDEN!
-```
-
-**All changes MUST go through Pull Requests. No exceptions.**
+Quick reference for branch naming:
+- `feat/feature-name` - New features
+- `fix/bug-description` - Bug fixes
+- `test/test-description` - Test additions
+- `refactor/description` - Code refactoring
+- `docs/description` - Documentation
+- `chore/description` - Maintenance
 
 ## Code Style Conventions
 
