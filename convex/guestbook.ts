@@ -10,24 +10,28 @@ export const sign = mutation({
     website: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Trim whitespace to ensure meaningful content
+    const name = args.name.trim();
+    const message = args.message.trim();
+    
     // Validation: check length constraints
-    if (args.name.length < 1) {
+    if (name.length < 1) {
       throw new Error("Name is required!");
     }
-    if (args.name.length > 50) {
+    if (name.length > 50) {
       throw new Error("Name too long! Keep it under 50 characters.");
     }
-    if (args.message.length < 1) {
+    if (message.length < 1) {
       throw new Error("Message is required!");
     }
-    if (args.message.length > 500) {
+    if (message.length > 500) {
       throw new Error("Message too long! Keep it under 500 characters.");
     }
 
     const entryId = await ctx.db.insert("guestbookEntries", {
       siteId: args.siteId,
-      name: args.name,
-      message: args.message,
+      name: name,
+      message: message,
       email: args.email,
       website: args.website,
       timestamp: Date.now(),
@@ -41,7 +45,7 @@ export const getEntries = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("guestbookEntries")
-      .filter((q) => q.eq(q.field("siteId"), args.siteId))
+      .withIndex("by_site", (q) => q.eq("siteId", args.siteId))
       .order("desc")
       .take(50);
   },
@@ -52,7 +56,7 @@ export const getEntriesCount = query({
   handler: async (ctx, args) => {
     const entries = await ctx.db
       .query("guestbookEntries")
-      .filter((q) => q.eq(q.field("siteId"), args.siteId))
+      .withIndex("by_site", (q) => q.eq("siteId", args.siteId))
       .collect();
     return entries.length;
   },
@@ -62,22 +66,19 @@ export const getEntriesCount = query({
 export const getBatchEntriesCounts = query({
   args: { siteIds: v.array(v.id("sites")) },
   handler: async (ctx, args) => {
-    // Fetch all guestbook entries for the given site IDs
-    const allEntries = await ctx.db
-      .query("guestbookEntries")
-      .collect();
-    
-    // Count entries per site
+    // Use index-backed queries for each site (more efficient than full table scan)
     const counts: Record<string, number> = {};
-    for (const siteId of args.siteIds) {
-      counts[siteId] = 0;
-    }
     
-    for (const entry of allEntries) {
-      if (entry.siteId in counts) {
-        counts[entry.siteId]++;
-      }
-    }
+    // Fetch counts for each site using the by_site index
+    await Promise.all(
+      args.siteIds.map(async (siteId) => {
+        const entries = await ctx.db
+          .query("guestbookEntries")
+          .withIndex("by_site", (q) => q.eq("siteId", siteId))
+          .collect();
+        counts[siteId] = entries.length;
+      })
+    );
     
     return counts;
   },
