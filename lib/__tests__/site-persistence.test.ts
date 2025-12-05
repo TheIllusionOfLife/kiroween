@@ -1,28 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
+import { validateSiteConfig } from '../../convex/validation';
 
-// Validation function extracted from the mutation logic
-function validateSiteConfig(config: {
-  userId?: string;
-  name?: string;
-  hobby?: string;
-  theme?: string;
-  [key: string]: any;
-}): void {
-  if (!config.userId || config.userId.length === 0) {
-    throw new Error("User ID is required");
-  }
-  if (!config.name || config.name.length === 0) {
-    throw new Error("Name is required");
-  }
-  if (!config.hobby || config.hobby.length === 0) {
-    throw new Error("Hobby is required");
-  }
-  if (!config.theme || config.theme.length === 0) {
-    throw new Error("Theme is required");
-  }
-}
-
+/**
+ * Site Persistence Tests
+ * 
+ * These tests validate the structure and logic of site persistence
+ * using the SAME validation function that the Convex mutation uses.
+ * This ensures consistency between tests and production code.
+ * 
+ * The validation logic is defined in convex/validation.ts and imported
+ * by both convex/sites.ts (the mutation) and this test file.
+ */
 describe('Site Persistence', () => {
 
   describe('Property-Based Tests', () => {

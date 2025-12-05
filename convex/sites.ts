@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { validateSiteConfig } from "./validation";
 
 export const saveSite = mutation({
   args: {
@@ -27,19 +28,8 @@ export const saveSite = mutation({
     createdAt: v.number(),
   },
   handler: async (ctx, args) => {
-    // Validate required fields (Requirements 6.5)
-    if (!args.userId || args.userId.length === 0) {
-      throw new Error("User ID is required");
-    }
-    if (!args.name || args.name.length === 0) {
-      throw new Error("Name is required");
-    }
-    if (!args.hobby || args.hobby.length === 0) {
-      throw new Error("Hobby is required");
-    }
-    if (!args.theme || args.theme.length === 0) {
-      throw new Error("Theme is required");
-    }
+    // Validate required fields using shared validation (Requirement 6.5)
+    validateSiteConfig(args);
     
     // Store site with user association (Requirements 6.1, 6.2, 6.6)
     const siteId = await ctx.db.insert("sites", {
