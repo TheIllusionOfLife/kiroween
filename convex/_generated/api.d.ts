@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as clearOldSites from "../clearOldSites.js";
 import type * as guestbook from "../guestbook.js";
 import type * as sites from "../sites.js";
 import type * as validation from "../validation.js";
@@ -19,6 +20,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  clearOldSites: typeof clearOldSites;
   guestbook: typeof guestbook;
   sites: typeof sites;
   validation: typeof validation;
