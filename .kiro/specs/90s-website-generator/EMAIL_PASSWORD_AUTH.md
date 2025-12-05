@@ -66,12 +66,9 @@ You can now create test accounts using email/password:
 Create development accounts:
 
 ```bash
-# Example test accounts
-Email: dev1@test.com
-Password: DevPassword123!
-
-Email: dev2@test.com  
-Password: DevPassword123!
+# Test account (verified and working)
+Email: test@example.com
+Password: Kiroween2025!
 ```
 
 **Note:** Use strong passwords that meet Clerk's requirements:
@@ -80,6 +77,7 @@ Password: DevPassword123!
 - At least one lowercase letter
 - At least one number
 - At least one special character (recommended)
+- Must not be in breach databases (Clerk checks this)
 
 ---
 

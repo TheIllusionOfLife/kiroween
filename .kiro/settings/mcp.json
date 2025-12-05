@@ -13,7 +13,9 @@
         "browser_type",
         "browser_wait_for",
         "browser_resize",
-        "browser_close"
+        "browser_close",
+        "browser_run_code",
+        "browser_handle_dialog"
       ]
     }
   }

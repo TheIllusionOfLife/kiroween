@@ -94,7 +94,7 @@ Create test accounts easily:
 
 ```
 Email: test@example.com
-Password: TestPassword123!
+Password: Kiroween2025!
 ```
 
 **Requirements:**
@@ -102,6 +102,7 @@ Password: TestPassword123!
 - At least one uppercase letter
 - At least one lowercase letter
 - At least one number
+- Must not be in breach databases
 
 See [EMAIL_PASSWORD_AUTH.md](.kiro/specs/90s-website-generator/EMAIL_PASSWORD_AUTH.md) for detailed authentication documentation.
 

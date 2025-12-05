@@ -150,6 +150,12 @@ export default function GalleryPage() {
                       >
                         View Site 🌐
                       </Link>
+                      <Link
+                        href={`/?edit=${site._id}`}
+                        className="flex-1 text-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                      >
+                        Edit ✏️
+                      </Link>
                     </div>
                   </div>
                 </CardContent>
