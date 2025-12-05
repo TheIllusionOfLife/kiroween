@@ -97,7 +97,7 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - Preserve work when user signs in
   - _Requirements: 23.1, 23.2, 23.3, 23.4, 23.5, 23.6, 23.7_
 
-- [ ] 9. Update site persistence with user association
+- [x] 9. Update site persistence with user association
   - Modify saveSite mutation to require userId
   - Associate saved sites with authenticated user
   - Initialize view count to zero
@@ -105,15 +105,15 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - Validate all required fields before saving
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
 
-- [ ] 9.1 Write property test for site persistence
+- [x] 9.1 Write property test for site persistence
   - **Property 6: Site persistence round-trip**
   - **Validates: Requirements 6.1, 6.2, 6.4, 6.6**
 
-- [ ] 9.2 Write property test for initial view count
+- [x] 9.2 Write property test for initial view count
   - **Property 7: New sites initialize with zero views**
   - **Validates: Requirements 6.3**
 
-- [ ] 9.3 Write property test for required fields
+- [x] 9.3 Write property test for required fields
   - **Property 8: Required fields are enforced**
   - **Validates: Requirements 6.5**
 
