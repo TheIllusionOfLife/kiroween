@@ -66,11 +66,8 @@ You can now create test accounts using email/password:
 Create development accounts:
 
 ```bash
-# Example test accounts
+# Test account (verified and working)
 Email: test@example.com
-Password: Kiroween2025!
-
-Email: dev2@test.com  
 Password: Kiroween2025!
 ```
 
