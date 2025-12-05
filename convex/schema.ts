@@ -3,8 +3,8 @@ import { v } from "convex/values";
 
 export default defineSchema({
   sites: defineTable({
-    // User association
-    userId: v.string(), // Clerk user ID
+    // User association (optional for backward compatibility with old test data)
+    userId: v.optional(v.string()), // Clerk user ID
     
     // Basic info
     name: v.string(),
@@ -21,7 +21,7 @@ export default defineSchema({
     
     // Audio settings
     bgmTrack: v.optional(v.string()),
-    soundEffects: v.boolean(),
+    soundEffects: v.optional(v.boolean()), // Optional for backward compatibility
     
     // Customization (for edit mode)
     customFonts: v.optional(
@@ -40,7 +40,7 @@ export default defineSchema({
     
     // Metadata
     createdAt: v.number(),
-    updatedAt: v.number(),
+    updatedAt: v.optional(v.number()), // Optional for backward compatibility
     views: v.number(),
   })
     .index("by_created_at", ["createdAt"])
