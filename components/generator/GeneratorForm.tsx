@@ -179,7 +179,7 @@ export function GeneratorForm() {
           </CardHeader>
           <CardContent className="pt-6">
             <p className="text-center text-gray-700">
-              You are editing an existing site. Make your changes and click "Update Site" to save.
+              You are editing an existing site. Make your changes and click &ldquo;Update Site&rdquo; to save.
             </p>
           </CardContent>
         </Card>

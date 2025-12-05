@@ -323,6 +323,49 @@ MIT License - See [LICENSE](LICENSE) for details
 
 ---
 
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**Issue: "Missing NEXT_PUBLIC_CONVEX_URL environment variable"**
+- **Solution**: Check Vercel environment variables and redeploy
+- Go to Vercel Dashboard → Settings → Environment Variables
+- Verify `NEXT_PUBLIC_CONVEX_URL` is set for Production
+- Click "Redeploy" to rebuild
+
+**Issue: Update site fails with "Server Error"**
+- **Status**: ✅ Fixed in production (December 5, 2025)
+- **Root Cause**: Convex `ctx.db.patch()` doesn't handle `undefined` values well
+- **Fix**: Added filtering to remove `undefined` values before patching
+- **Details**: See `.kiro/specs/90s-website-generator/testing/UPDATE_SITE_FIX.md`
+
+**Issue: useSearchParams() error during build**
+- **Status**: ✅ Fixed in production (December 5, 2025)
+- **Root Cause**: Next.js 15+ requires Suspense boundary for `useSearchParams()`
+- **Fix**: Wrapped component in Suspense boundary
+- **Details**: See commit history for implementation
+
+**Issue: Tests failing locally**
+- **Solution**: Ensure all dependencies are installed
+```bash
+npm install
+npm test
+```
+
+**Issue: Clerk authentication not working**
+- **Solution**: Check Clerk configuration
+- Verify API keys in `.env.local`
+- Ensure satellite domain is configured in Clerk dashboard
+- Check that GitHub OAuth is enabled
+
+### Getting Help
+
+- **Documentation**: Check `.kiro/steering/` for detailed guides
+- **Issues**: [GitHub Issues](https://github.com/TheIllusionOfLife/kiroween/issues)
+- **Specs**: See `.kiro/specs/90s-website-generator/` for requirements and design
+
+---
+
 ## 📧 Contact
 
 - **Live Demo:** [https://kiroween-mu.vercel.app](https://kiroween-mu.vercel.app)

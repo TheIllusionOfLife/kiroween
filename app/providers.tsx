@@ -29,7 +29,7 @@ export function Providers({ children }: { children: ReactNode }) {
           <ol>
             <li>Go to Vercel Dashboard → Settings → Environment Variables</li>
             <li>Verify NEXT_PUBLIC_CONVEX_URL is set for Production</li>
-            <li>Click "Redeploy" to rebuild with the environment variable</li>
+            <li>Click &ldquo;Redeploy&rdquo; to rebuild with the environment variable</li>
           </ol>
         </details>
       </div>
