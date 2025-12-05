@@ -70,6 +70,11 @@ export function GeneratorForm() {
 
     // Save to Convex with userId
     try {
+      if (!user) {
+        alert("Unable to save: user information not loaded. Please try again.");
+        return;
+      }
+      
       await createSite({
         userId: user.id,
         name: config.name,

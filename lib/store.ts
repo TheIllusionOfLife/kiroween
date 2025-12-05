@@ -94,7 +94,6 @@ export function useDebouncedPreview(
   generateFn: (config: SiteConfig) => string,
   delay: number = 500
 ) {
-  const { config, setPreviewHtml, setIsGenerating } = useGeneratorStore();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const updatePreview = useCallback(() => {
@@ -102,22 +101,23 @@ export function useDebouncedPreview(
       clearTimeout(timeoutRef.current);
     }
     
-    setIsGenerating(true);
+    useGeneratorStore.getState().setIsGenerating(true);
     
     timeoutRef.current = setTimeout(() => {
       // Get the latest config from the store at execution time
       const latestConfig = useGeneratorStore.getState().config;
       const html = generateFn(latestConfig);
-      setPreviewHtml(html);
-      setIsGenerating(false);
+      useGeneratorStore.getState().setPreviewHtml(html);
+      useGeneratorStore.getState().setIsGenerating(false);
     }, delay);
-  }, [generateFn, delay, setPreviewHtml, setIsGenerating]);
+  }, [generateFn, delay]);
   
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
     };
   }, []);
