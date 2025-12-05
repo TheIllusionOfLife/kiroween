@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Run Tests on Save",
+  "description": "Automatically runs the test suite whenever a .ts or .tsx file is saved to catch issues early in development",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.ts",
+      "**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npm test"
+  },
+  "workspaceFolderName": "kiroween",
+  "shortName": "run-tests-on-save"
+}

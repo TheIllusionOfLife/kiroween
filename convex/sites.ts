@@ -1,0 +1,88 @@
+import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+
+export const create = mutation({
+  args: {
+    userId: v.string(),
+    name: v.string(),
+    hobby: v.string(),
+    email: v.optional(v.string()),
+    theme: v.string(),
+    addMusic: v.boolean(),
+    addCursor: v.boolean(),
+    addGifs: v.boolean(),
+    addPopups: v.optional(v.boolean()),
+    addRainbowText: v.optional(v.boolean()),
+    bgmTrack: v.optional(v.string()),
+    soundEffects: v.boolean(),
+    customFonts: v.optional(v.object({
+      heading: v.optional(v.string()),
+      body: v.optional(v.string()),
+    })),
+    customColors: v.optional(v.object({
+      background: v.optional(v.string()),
+      text: v.optional(v.string()),
+      links: v.optional(v.string()),
+    })),
+    createdAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // Validate required fields
+    if (!args.name || args.name.length === 0) {
+      throw new Error("Name is required");
+    }
+    if (!args.hobby || args.hobby.length === 0) {
+      throw new Error("Hobby is required");
+    }
+    if (!args.theme || args.theme.length === 0) {
+      throw new Error("Theme is required");
+    }
+    
+    const siteId = await ctx.db.insert("sites", {
+      ...args,
+      views: 0,
+      updatedAt: args.createdAt,
+    });
+    return siteId;
+  },
+});
+
+export const list = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("sites")
+      .order("desc")
+      .take(50);
+  },
+});
+
+export const getUserSites = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("sites")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .order("desc")
+      .collect();
+  },
+});
+
+export const get = query({
+  args: { id: v.id("sites") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
+export const incrementViews = mutation({
+  args: { id: v.id("sites") },
+  handler: async (ctx, args) => {
+    const site = await ctx.db.get(args.id);
+    if (site) {
+      await ctx.db.patch(args.id, {
+        views: site.views + 1,
+      });
+    }
+  },
+});
