@@ -28,6 +28,32 @@ inclusion: always
 - **Convex Cloud** - Database hosting
 - **GitHub** - Version control + CI/CD
 
+## ⚠️ CRITICAL: Git Workflow Rules
+
+### NEVER Push Directly to Main
+
+**ALWAYS create a Pull Request for ANY changes to main branch:**
+
+```bash
+# ❌ NEVER DO THIS
+git push origin main
+
+# ✅ ALWAYS DO THIS INSTEAD
+git checkout -b fix/description-of-fix
+git add .
+git commit -m "fix: description"
+git push origin fix/description-of-fix
+gh pr create --title "Fix: Description" --body "Details..."
+```
+
+**Why?**
+- Ensures CI/CD checks run before deployment
+- Allows code review
+- Prevents breaking production
+- Maintains deployment history
+
+**Exception:** NONE. Even for hotfixes, create a PR.
+
 ## Build System
 
 ### Development
@@ -110,16 +136,27 @@ npx convex import --table sites data.jsonl
 ```
 
 ### Git Workflow
+
+**⚠️ CRITICAL: NEVER push directly to main branch!**
+
 ```bash
-# Create feature branch
+# ✅ CORRECT: Create feature branch
 git checkout -b feat/feature-name
 
-# Commit with conventional format
+# ✅ CORRECT: Commit with conventional format
 git commit -m "feat: add feature description"
 
-# Push and create PR
+# ✅ CORRECT: Push to feature branch
 git push origin feat/feature-name
+
+# ✅ CORRECT: Create Pull Request (REQUIRED)
+gh pr create --title "feat: Feature Name" --body "Description of changes"
+
+# ❌ WRONG: NEVER do this
+git push origin main  # FORBIDDEN!
 ```
+
+**All changes MUST go through Pull Requests. No exceptions.**
 
 ## Code Style Conventions
 
