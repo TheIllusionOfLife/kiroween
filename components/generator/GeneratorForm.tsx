@@ -79,21 +79,9 @@ export function GeneratorForm() {
       if (isEditMode && editingSiteId) {
         // Update existing site (Requirements 19.3-19.10)
         await updateSite({
-          siteId: editingSiteId as any, // Type assertion for Id<"sites">
+          siteId: editingSiteId,
           userId: user.id,
-          name: config.name,
-          hobby: config.hobby,
-          email: config.email,
-          theme: config.theme,
-          addMusic: config.addMusic,
-          addCursor: config.addCursor,
-          addGifs: config.addGifs,
-          addPopups: config.addPopups,
-          addRainbowText: config.addRainbowText,
-          bgmTrack: config.bgmTrack,
-          soundEffects: config.soundEffects,
-          customFonts: config.customFonts,
-          customColors: config.customColors,
+          ...config,
         });
         alert("Site updated successfully!");
         exitEditMode(); // Exit edit mode after successful update
@@ -101,19 +89,7 @@ export function GeneratorForm() {
         // Create new site
         await saveSite({
           userId: user.id,
-          name: config.name,
-          hobby: config.hobby,
-          email: config.email,
-          theme: config.theme,
-          addMusic: config.addMusic,
-          addCursor: config.addCursor,
-          addGifs: config.addGifs,
-          addPopups: config.addPopups,
-          addRainbowText: config.addRainbowText,
-          bgmTrack: config.bgmTrack,
-          soundEffects: config.soundEffects,
-          customFonts: config.customFonts,
-          customColors: config.customColors,
+          ...config,
           createdAt: Date.now(),
         });
         alert("Site saved successfully! Check your gallery to view it.");

@@ -1,30 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
+import { validateGuestbookEntry } from '../../convex/guestbook';
 
 /**
  * Guestbook Tests
  * 
- * These tests validate guestbook entry validation logic.
+ * These tests validate guestbook entry validation logic using the
+ * SAME validation function that the Convex mutation uses.
+ * This ensures consistency between tests and production code.
+ * 
+ * The validation logic is defined in convex/guestbook.ts and imported
+ * by both the mutation and this test file.
  */
-
-// Validation function matching the logic in convex/guestbook.ts
-function validateGuestbookEntry(entry: { name: string; message: string }) {
-  const name = entry.name.trim();
-  const message = entry.message.trim();
-  
-  if (name.length < 1) {
-    throw new Error("Name is required!");
-  }
-  if (name.length > 50) {
-    throw new Error("Name too long! Keep it under 50 characters.");
-  }
-  if (message.length < 1) {
-    throw new Error("Message is required!");
-  }
-  if (message.length > 500) {
-    throw new Error("Message too long! Keep it under 500 characters.");
-  }
-}
 
 describe('Guestbook', () => {
   describe('Property-Based Tests', () => {

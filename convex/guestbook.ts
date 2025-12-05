@@ -1,6 +1,28 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+/**
+ * Validates guestbook entry fields
+ * Shared validation logic used by both mutation and tests
+ */
+export function validateGuestbookEntry(entry: { name: string; message: string }) {
+  const name = entry.name.trim();
+  const message = entry.message.trim();
+  
+  if (name.length < 1) {
+    throw new Error("Name is required!");
+  }
+  if (name.length > 50) {
+    throw new Error("Name too long! Keep it under 50 characters.");
+  }
+  if (message.length < 1) {
+    throw new Error("Message is required!");
+  }
+  if (message.length > 500) {
+    throw new Error("Message too long! Keep it under 500 characters.");
+  }
+}
+
 export const sign = mutation({
   args: {
     siteId: v.id("sites"),
@@ -10,23 +32,12 @@ export const sign = mutation({
     website: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // Trim whitespace to ensure meaningful content
+    // Validate using shared validation function
+    validateGuestbookEntry({ name: args.name, message: args.message });
+    
+    // Trim whitespace after validation
     const name = args.name.trim();
     const message = args.message.trim();
-    
-    // Validation: check length constraints
-    if (name.length < 1) {
-      throw new Error("Name is required!");
-    }
-    if (name.length > 50) {
-      throw new Error("Name too long! Keep it under 50 characters.");
-    }
-    if (message.length < 1) {
-      throw new Error("Message is required!");
-    }
-    if (message.length > 500) {
-      throw new Error("Message too long! Keep it under 500 characters.");
-    }
 
     const entryId = await ctx.db.insert("guestbookEntries", {
       siteId: args.siteId,

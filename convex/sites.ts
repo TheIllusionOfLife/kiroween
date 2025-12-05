@@ -127,21 +127,12 @@ export const updateSite = mutation({
     // Validate required fields using shared validation (Requirement 19.3, 19.4, 19.5, 19.6, 19.7, 19.8)
     validateSiteConfig(args);
     
+    // Extract fields to update (exclude siteId and userId which are not stored)
+    const { siteId, userId, ...updateFields } = args;
+    
     // Update site configuration while preserving metadata (Requirements 19.9, 19.10)
     await ctx.db.patch(args.siteId, {
-      name: args.name,
-      hobby: args.hobby,
-      email: args.email,
-      theme: args.theme,
-      addMusic: args.addMusic,
-      addCursor: args.addCursor,
-      addGifs: args.addGifs,
-      addPopups: args.addPopups,
-      addRainbowText: args.addRainbowText,
-      bgmTrack: args.bgmTrack,
-      soundEffects: args.soundEffects,
-      customFonts: args.customFonts,
-      customColors: args.customColors,
+      ...updateFields,
       updatedAt: Date.now(),
       // Explicitly preserve createdAt and views (Requirements 19.9, 19.10)
       createdAt: existing.createdAt,
