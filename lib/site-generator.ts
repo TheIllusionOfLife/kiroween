@@ -15,7 +15,12 @@ function escapeHtml(str: string): string {
 function generateBGMAudio(bgmTrack?: string): string {
   if (!bgmTrack) return '';
   
-  // Map track names to data URLs or external URLs
+  // TODO: Replace with self-hosted audio files or configurable URLs
+  // Current implementation uses external URLs which may be subject to hotlink restrictions
+  // For production, audio files should be:
+  // 1. Self-hosted in public/audio/ directory, OR
+  // 2. Served from a CDN with proper licensing, OR
+  // 3. Made configurable via environment variables
   const audioTracks: Record<string, string> = {
     'midi-game': 'https://www.bensound.com/bensound-music/bensound-retrosoul.mp3',
     'midi-chill': 'https://www.bensound.com/bensound-music/bensound-sunny.mp3',
