@@ -496,7 +496,7 @@ export function GeneratorForm() {
           <CardContent className="p-0">
             <iframe
               srcDoc={previewHtml}
-              className="w-full h-[800px] border-0"
+              className="w-full min-h-[1200px] border-0"
               title="Preview"
             />
           </CardContent>
