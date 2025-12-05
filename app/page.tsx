@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -9,7 +9,7 @@ import { GeneratorForm } from "@/components/generator/GeneratorForm";
 import { Header } from "@/components/Header";
 import { useGeneratorStore } from "@/lib/store";
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const editSiteId = searchParams.get("edit");
   const { enterEditMode } = useGeneratorStore();
@@ -42,7 +42,7 @@ export default function Home() {
   }, [editSiteId, siteData, enterEditMode]);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-yellow-400">
+    <>
       <Header />
       <div className="max-w-6xl mx-auto px-8 pb-8">
         <div className="text-center mb-8">
@@ -56,6 +56,20 @@ export default function Home() {
 
         <GeneratorForm />
       </div>
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-yellow-400">
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-white text-2xl">Loading...</div>
+        </div>
+      }>
+        <HomeContent />
+      </Suspense>
     </main>
   );
 }
