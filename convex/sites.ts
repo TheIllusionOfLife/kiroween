@@ -100,7 +100,7 @@ export const updateSite = mutation({
     addPopups: v.optional(v.boolean()),
     addRainbowText: v.optional(v.boolean()),
     bgmTrack: v.optional(v.string()),
-    soundEffects: v.boolean(),
+    soundEffects: v.optional(v.boolean()),
     customFonts: v.optional(v.object({
       heading: v.optional(v.string()),
       body: v.optional(v.string()),
