@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { generateSiteHTML } from "@/lib/site-generator";
-import { useEffect } from "react";
+import { useEffect, use } from "react";
 import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,10 @@ import { GuestbookWidget } from "@/components/guestbook/GuestbookWidget";
 export default function SitePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const siteId = params.id;
+  // Unwrap the params Promise using React.use()
+  const { id: siteId } = use(params);
 
   const site = useQuery(
     api.sites.get,
