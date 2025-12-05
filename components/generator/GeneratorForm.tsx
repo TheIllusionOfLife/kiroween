@@ -23,7 +23,7 @@ import { useUser, SignInButton } from "@clerk/nextjs";
 
 export function GeneratorForm() {
   const { config, updateConfig, previewHtml, setPreviewHtml } = useGeneratorStore();
-  const createSite = useMutation(api.sites.create);
+  const saveSite = useMutation(api.sites.saveSite);
   const { isSignedIn, user } = useUser();
 
   // Generate preview whenever config changes
@@ -75,7 +75,7 @@ export function GeneratorForm() {
         return;
       }
       
-      await createSite({
+      await saveSite({
         userId: user.id,
         name: config.name,
         hobby: config.hobby,

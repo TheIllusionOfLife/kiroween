@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-export const create = mutation({
+export const saveSite = mutation({
   args: {
     userId: v.string(),
     name: v.string(),
@@ -27,7 +27,10 @@ export const create = mutation({
     createdAt: v.number(),
   },
   handler: async (ctx, args) => {
-    // Validate required fields
+    // Validate required fields (Requirements 6.5)
+    if (!args.userId || args.userId.length === 0) {
+      throw new Error("User ID is required");
+    }
     if (!args.name || args.name.length === 0) {
       throw new Error("Name is required");
     }
@@ -38,14 +41,20 @@ export const create = mutation({
       throw new Error("Theme is required");
     }
     
+    // Store site with user association (Requirements 6.1, 6.2, 6.6)
     const siteId = await ctx.db.insert("sites", {
       ...args,
-      views: 0,
+      views: 0, // Initialize view count to zero (Requirement 6.3)
       updatedAt: args.createdAt,
     });
+    
+    // Return site ID for retrieval (Requirement 6.4)
     return siteId;
   },
 });
+
+// Keep create as an alias for backward compatibility
+export const create = saveSite;
 
 export const list = query({
   args: {},
