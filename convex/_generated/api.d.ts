@@ -10,6 +10,7 @@
 
 import type * as guestbook from "../guestbook.js";
 import type * as sites from "../sites.js";
+import type * as validation from "../validation.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +21,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   guestbook: typeof guestbook;
   sites: typeof sites;
+  validation: typeof validation;
 }>;
 
 /**

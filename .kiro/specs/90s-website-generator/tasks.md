@@ -202,7 +202,7 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
 - [x] 18. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 19. Deploy to Vercel
+- [x] 19. Deploy to Vercel
   - Connect GitHub repository to Vercel
   - Configure environment variables (Clerk, Convex)
   - Set up automatic deployments on push
