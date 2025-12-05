@@ -59,10 +59,26 @@ function generateBGMAudio(bgmTrack?: string): string {
 function generateSoundEffects(): string {
   return `
     <script>
+      // Reuse a single AudioContext for better performance
+      var sharedAudioContext = null;
+      
+      function getAudioContext() {
+        if (!sharedAudioContext) {
+          try {
+            sharedAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+          } catch (e) {
+            // AudioContext not supported
+          }
+        }
+        return sharedAudioContext;
+      }
+      
       // Sound effect helper
       function playSound(frequency, duration) {
         try {
-          var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          var audioContext = getAudioContext();
+          if (!audioContext) return;
+          
           var oscillator = audioContext.createOscillator();
           var gainNode = audioContext.createGain();
           

@@ -105,11 +105,13 @@ export function useDebouncedPreview(
     setIsGenerating(true);
     
     timeoutRef.current = setTimeout(() => {
-      const html = generateFn(config);
+      // Get the latest config from the store at execution time
+      const latestConfig = useGeneratorStore.getState().config;
+      const html = generateFn(latestConfig);
       setPreviewHtml(html);
       setIsGenerating(false);
     }, delay);
-  }, [config, generateFn, delay, setPreviewHtml, setIsGenerating]);
+  }, [generateFn, delay, setPreviewHtml, setIsGenerating]);
   
   return updatePreview;
 }
