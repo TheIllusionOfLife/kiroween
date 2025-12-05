@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Validate Before Commit",
+  "description": "Runs tests and type checking before allowing a commit to ensure code quality",
+  "version": "1",
+  "when": {
+    "type": "manual"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npm test && npx tsc --noEmit"
+  },
+  "workspaceFolderName": "kiroween",
+  "shortName": "validate-before-commit"
+}

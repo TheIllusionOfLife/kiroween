@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Run Property Tests on Test Change",
+  "description": "Runs property-based tests when test files are modified to ensure they pass with 100 iterations",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/__tests__/**/*.test.ts",
+      "**/*.test.ts"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npm test -- --run"
+  },
+  "workspaceFolderName": "kiroween",
+  "shortName": "run-property-tests-on-test-change"
+}

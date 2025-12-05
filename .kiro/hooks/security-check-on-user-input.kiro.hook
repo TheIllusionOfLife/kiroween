@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "name": "Security Check on User Input Handling",
+  "description": "Reminds you to sanitize user inputs when modifying input handling code",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "components/**/*.tsx",
+      "lib/site-generator.ts",
+      "convex/**/*.ts"
+    ]
+  },
+  "then": {
+    "type": "sendMessage",
+    "message": "🔒 Code handling user input modified! Security checklist:\n✓ Are all user inputs HTML-escaped before rendering?\n✓ Are inputs validated for length and format?\n✓ Are SQL/NoSQL injection risks mitigated?\n✓ Are XSS attack vectors handled?\n\nRun: npm test -- security to run security-focused tests"
+  },
+  "workspaceFolderName": "kiroween",
+  "shortName": "security-check-on-user-input"
+}

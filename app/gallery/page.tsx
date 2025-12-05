@@ -121,7 +121,7 @@ export default function GalleryPage() {
               >
                 <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600">
                   <CardTitle className="text-white text-xl truncate">
-                    {site.name}'s Site
+                    {site.name}&apos;s Site
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">

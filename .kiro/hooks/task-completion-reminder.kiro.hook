@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Task Completion Reminder",
+  "description": "Reminds you to update task status and run tests when tasks.md is modified",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      ".kiro/specs/**/tasks.md"
+    ]
+  },
+  "then": {
+    "type": "sendMessage",
+    "message": "✅ Tasks updated! Quick checklist:\n1. Did you mark completed tasks as [x]?\n2. Did you update PBT status for property tests?\n3. Are all tests passing? Run: npm test\n4. Ready to create a PR for completed tasks?\n\nWould you like me to help with any of these?"
+  },
+  "workspaceFolderName": "kiroween",
+  "shortName": "task-completion-reminder"
+}
