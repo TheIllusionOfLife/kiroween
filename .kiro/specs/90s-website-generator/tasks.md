@@ -210,7 +210,7 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - Test production deployment
   - _Requirements: 22.1, 22.2, 22.3, 22.4, 22.5, 22.6, 22.7_
 
-- [ ] 20. Final testing and polish
+- [x] 20. Final testing and polish
   - Test all user flows end-to-end
   - Verify guest mode works correctly
   - Test authentication flow
@@ -220,7 +220,7 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
   - Test on multiple browsers (Chrome, Firefox, Safari, Edge)
   - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5_
 
-- [ ] 21. Final Checkpoint - Ensure all tests pass
+- [x] 21. Final Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ---
