@@ -44,7 +44,7 @@ export function GeneratorForm() {
       // Guest mode: prompt to sign in
       const shouldSignIn = confirm(
         "🔒 Sign in to save your site!\n\n" +
-        "You need to sign in with GitHub to save your site to the gallery.\n\n" +
+        "You need to sign in to save your site to the gallery.\n\n" +
         "Click OK to sign in, or Cancel to continue as a guest (you can still download your site)."
       );
       

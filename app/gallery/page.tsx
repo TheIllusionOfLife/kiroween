@@ -38,12 +38,12 @@ export default function GalleryPage() {
                 The gallery shows your personal collection of saved sites.
               </p>
               <p className="text-xl text-gray-600">
-                Sign in with GitHub to save sites and build your gallery!
+                Sign in to save sites and build your gallery!
               </p>
               <div className="flex gap-4 justify-center pt-4">
                 <SignInButton mode="modal">
                   <button className="px-8 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-bold text-xl">
-                    🚀 Sign In with GitHub
+                    🚀 Sign In
                   </button>
                 </SignInButton>
                 <Link

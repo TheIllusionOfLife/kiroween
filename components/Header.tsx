@@ -44,7 +44,7 @@ export function Header() {
           ) : (
             <SignInButton mode="modal">
               <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
-                Sign In with GitHub
+                Sign In
               </button>
             </SignInButton>
           )}
