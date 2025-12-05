@@ -13,13 +13,9 @@ import { GuestbookWidget } from "@/components/guestbook/GuestbookWidget";
 export default function SitePage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const [siteId, setSiteId] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    params.then((p) => setSiteId(p.id));
-  }, [params]);
+  const siteId = params.id;
 
   const site = useQuery(
     api.sites.get,
@@ -27,9 +23,13 @@ export default function SitePage({
   );
   const incrementViews = useMutation(api.sites.incrementViews);
 
+  // Track if views have been incremented to prevent infinite loop
+  const hasIncrementedViews = React.useRef(false);
+
   useEffect(() => {
-    if (site && siteId) {
+    if (site && siteId && !hasIncrementedViews.current) {
       incrementViews({ id: siteId as Id<"sites"> });
+      hasIncrementedViews.current = true;
     }
   }, [site, siteId, incrementViews]);
 
