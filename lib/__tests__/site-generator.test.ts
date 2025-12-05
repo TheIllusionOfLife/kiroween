@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { generateSiteHTML, SiteConfig } from '../site-generator';
+import { generateSiteHTML } from '../site-generator';
+import type { SiteConfig } from '../types';
 
 describe('Site Generator', () => {
   describe('Property-Based Tests', () => {
@@ -205,14 +206,14 @@ describe('Site Generator', () => {
         fc.record({
           name: fc.string({ minLength: 1, maxLength: 50 }),
           hobby: fc.string({ minLength: 1, maxLength: 100 }),
-          email: fc.option(fc.emailAddress()),
+          email: fc.option(fc.emailAddress(), { nil: undefined }),
           theme: fc.constantFrom('neon', 'space', 'rainbow', 'matrix', 'geocities', 'angelfire'),
           addMusic: fc.boolean(),
           addCursor: fc.boolean(),
           addGifs: fc.boolean(),
           addPopups: fc.boolean(),
           addRainbowText: fc.boolean(),
-          bgmTrack: fc.option(fc.constantFrom('midi-game', 'midi-chill', 'midi-epic')),
+          bgmTrack: fc.option(fc.constantFrom('midi-game', 'midi-chill', 'midi-epic'), { nil: undefined }),
           soundEffects: fc.boolean(),
         }),
         (config: SiteConfig) => {

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import type { SiteConfig } from './types';
 
 interface GeneratorState {
@@ -95,7 +95,7 @@ export function useDebouncedPreview(
   delay: number = 500
 ) {
   const { config, setPreviewHtml, setIsGenerating } = useGeneratorStore();
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const updatePreview = useCallback(() => {
     if (timeoutRef.current) {
@@ -112,6 +112,15 @@ export function useDebouncedPreview(
       setIsGenerating(false);
     }, delay);
   }, [generateFn, delay, setPreviewHtml, setIsGenerating]);
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
   
   return updatePreview;
 }

@@ -635,7 +635,7 @@ export function generateSiteHTML(config: SiteConfig): string {
             
             ${safeEmail ? `
             <h2>📧 Contact Me</h2>
-            <p>Email me at: <a href="mailto:${encodeURIComponent(config.email || "")}">${safeEmail}</a></p>
+            <p>Email me at: <a href="mailto:${config.email || ""}">${safeEmail}</a></p>
             <p class="blink">⚡ I check my email every day! ⚡</p>
             ` : ""}
         </div>
