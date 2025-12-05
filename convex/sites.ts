@@ -125,7 +125,13 @@ export const updateSite = mutation({
     }
     
     // Validate required fields using shared validation (Requirement 19.3, 19.4, 19.5, 19.6, 19.7, 19.8)
-    validateSiteConfig(args);
+    // Pass only the fields that validation expects (exclude siteId)
+    validateSiteConfig({
+      userId: args.userId,
+      name: args.name,
+      hobby: args.hobby,
+      theme: args.theme,
+    });
     
     // Extract fields to update (exclude siteId and userId which are not stored)
     const { siteId, userId, ...updateFields } = args;
