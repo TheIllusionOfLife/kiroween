@@ -293,18 +293,22 @@ The 90s Website Generator is a web application that enables users to create auth
 
 ### Requirement 21: User Authentication
 
-**User Story:** As a user, I want to sign in with my GitHub account, so that I can save and manage my personal collection of generated sites.
+**User Story:** As a user, I want to sign in with my GitHub account or email/password, so that I can save and manage my personal collection of generated sites.
 
 #### Acceptance Criteria
 
-1. WHEN a user accesses the application THEN the System SHALL provide a sign-in option using GitHub OAuth
-2. WHEN a user clicks sign in THEN the System SHALL redirect to GitHub for authentication
-3. WHEN GitHub authentication succeeds THEN the System SHALL create or retrieve the user account and establish a session
-4. WHEN a user is authenticated THEN the System SHALL display their GitHub username and profile picture
-5. WHEN a user signs out THEN the System SHALL terminate the session and clear authentication state
-6. WHEN a user attempts to save a site without authentication THEN the System SHALL prompt them to sign in
-7. WHEN a user is authenticated THEN the System SHALL associate all saved sites with their user account
-8. THE System SHALL use Clerk as the authentication provider for GitHub OAuth integration
+1. WHEN a user accesses the application THEN the System SHALL provide sign-in options using GitHub OAuth or email/password
+2. WHEN a user clicks sign in with GitHub THEN the System SHALL redirect to GitHub for authentication
+3. WHEN a user chooses email/password sign-in THEN the System SHALL display email and password input fields
+4. WHEN a user submits email/password credentials THEN the System SHALL authenticate the user and establish a session
+5. WHEN GitHub authentication succeeds THEN the System SHALL create or retrieve the user account and establish a session
+6. WHEN a user is authenticated THEN the System SHALL display their username and profile picture (if available)
+7. WHEN a user signs out THEN the System SHALL terminate the session and clear authentication state
+8. WHEN a user attempts to save a site without authentication THEN the System SHALL prompt them to sign in
+9. WHEN a user is authenticated THEN the System SHALL associate all saved sites with their user account
+10. THE System SHALL use Clerk as the authentication provider for both GitHub OAuth and email/password authentication
+11. WHEN a user signs up with email/password THEN the System SHALL create a new account and establish a session
+12. WHEN a user provides invalid credentials THEN the System SHALL display an appropriate error message
 
 ### Requirement 23: Guest Mode
 

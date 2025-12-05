@@ -223,6 +223,15 @@ This implementation plan breaks down the 90s Website Generator into discrete, ac
 - [x] 21. Final Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
+- [ ] 22. Add email/password authentication support
+  - Verify Clerk is configured for email/password authentication
+  - Update sign-in UI to show both GitHub and email/password options
+  - Test email/password sign-in flow
+  - Test email/password sign-up flow
+  - Verify user sessions work correctly with email/password
+  - Update documentation with email/password testing instructions
+  - _Requirements: 21.3, 21.4, 21.11, 21.12_
+
 ---
 
 ## Notes

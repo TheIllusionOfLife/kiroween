@@ -19,7 +19,7 @@ The 90s Website Generator is a full-stack web application that enables users to 
 
 - **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS, shadcn/ui
 - **Backend**: Convex (real-time database with reactive queries)
-- **Authentication**: Clerk (GitHub OAuth)
+- **Authentication**: Clerk (GitHub OAuth + Email/Password)
 - **State Management**: Zustand (client state), Convex (server state)
 - **Deployment**: Vercel (frontend + CDN), Convex Cloud (database)
 
@@ -943,9 +943,10 @@ test('Property 10: Guestbook validation enforces length limits', () => {
 
 **Why Clerk?**
 - Drop-in authentication components
-- GitHub OAuth in minutes
+- GitHub OAuth + Email/Password support
 - Seamless Convex integration
 - Free tier sufficient for project
+- Easy E2E testing with email/password
 
 **Why Zustand?**
 - Minimal boilerplate
