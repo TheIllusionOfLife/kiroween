@@ -131,12 +131,10 @@ export const updateSite = mutation({
     const { siteId, userId, ...updateFields } = args;
     
     // Update site configuration while preserving metadata (Requirements 19.9, 19.10)
+    // Note: ctx.db.patch only updates provided fields, so createdAt and views are automatically preserved
     await ctx.db.patch(args.siteId, {
       ...updateFields,
       updatedAt: Date.now(),
-      // Explicitly preserve createdAt and views (Requirements 19.9, 19.10)
-      createdAt: existing.createdAt,
-      views: existing.views,
     });
     
     return args.siteId;

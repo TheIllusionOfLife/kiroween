@@ -48,7 +48,7 @@ export default function SitePage({
     if (!site) return;
     
     // Enter edit mode with site configuration (Requirement 19.2)
-    enterEditMode(siteId, {
+    enterEditMode(siteId as Id<"sites">, {
       name: site.name,
       hobby: site.hobby,
       email: site.email,
@@ -62,6 +62,7 @@ export default function SitePage({
       soundEffects: site.soundEffects,
       customFonts: site.customFonts,
       customColors: site.customColors,
+      createdAt: site.createdAt,
     });
     
     // Navigate to home page in edit mode

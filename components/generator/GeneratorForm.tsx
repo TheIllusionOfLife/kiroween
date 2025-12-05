@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import type { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -79,7 +80,7 @@ export function GeneratorForm() {
       if (isEditMode && editingSiteId) {
         // Update existing site (Requirements 19.3-19.10)
         await updateSite({
-          siteId: editingSiteId,
+          siteId: editingSiteId as Id<"sites">,
           userId: user.id,
           ...config,
         });
