@@ -51,6 +51,10 @@ export default function SitePage({
     addGifs: site.addGifs,
     addPopups: site.addPopups,
     addRainbowText: site.addRainbowText,
+    bgmTrack: site.bgmTrack,
+    soundEffects: site.soundEffects,
+    customFonts: site.customFonts,
+    customColors: site.customColors,
     createdAt: site.createdAt,
   });
 
