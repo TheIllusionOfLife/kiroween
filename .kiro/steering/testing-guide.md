@@ -324,6 +324,233 @@ npm test -- --coverage
 - **Unit Tests**: 80%+ code coverage
 - **Integration Tests**: Critical user flows
 
+## Security Testing Patterns
+
+### Pattern: XSS Prevention
+
+Test that malicious inputs are safely escaped:
+
+```typescript
+describe('Security Tests', () => {
+  // **Feature: 90s-website-generator, Property N: XSS Prevention**
+  it('Property N: XSS Prevention', () => {
+    fc.assert(
+      fc.property(
+        fc.record({
+          name: fc.string(), // Any string, including malicious
+          hobby: fc.string(),
+        }),
+        (config) => {
+          const html = generateSiteHTML(config);
+          
+          // Should not contain unescaped script tags
+          expect(html).not.toMatch(/<script[^>]*>[^<]*alert/);
+          
+          // Should escape HTML entities
+          if (config.name.includes('<')) {
+            expect(html).toContain('&lt;');
+          }
+          if (config.name.includes('>')) {
+            expect(html).toContain('&gt;');
+          }
+          if (config.name.includes('"')) {
+            expect(html).toContain('&quot;');
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+  
+  it('handles known XSS attack vectors', () => {
+    const maliciousInputs = [
+      '<script>alert("xss")</script>',
+      '"><script>alert("xss")</script>',
+      'javascript:alert("xss")',
+      '<img src=x onerror=alert("xss")>',
+      '<svg onload=alert("xss")>',
+      '\'><script>alert(String.fromCharCode(88,83,83))</script>',
+    ];
+    
+    maliciousInputs.forEach(input => {
+      const html = generateSiteHTML({ 
+        name: input, 
+        hobby: 'test', 
+        theme: 'neon' 
+      });
+      
+      expect(html).not.toContain('<script>');
+      expect(html).not.toContain('onerror=');
+      expect(html).not.toContain('onload=');
+      expect(html).not.toContain('javascript:');
+    });
+  });
+});
+```
+
+### Pattern: Input Validation
+
+Test that invalid inputs are rejected:
+
+```typescript
+describe('Validation Tests', () => {
+  it('rejects inputs exceeding length limits', () => {
+    fc.assert(
+      fc.property(
+        fc.record({
+          name: fc.string({ minLength: 51 }), // Over limit
+          message: fc.string(),
+        }),
+        (entry) => {
+          expect(() => validateGuestbookEntry(entry)).toThrow(/too long/i);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+  
+  it('rejects empty required fields', () => {
+    fc.assert(
+      fc.property(
+        fc.record({
+          name: fc.constant(''),
+          message: fc.string({ minLength: 1 }),
+        }),
+        (entry) => {
+          expect(() => validateGuestbookEntry(entry)).toThrow(/required/i);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+  
+  it('rejects whitespace-only inputs', () => {
+    const whitespaceStrings = ['   ', '\t\t', '\n\n', '  \t\n  '];
+    
+    whitespaceStrings.forEach(input => {
+      expect(() => validateGuestbookEntry({
+        name: input,
+        message: 'test'
+      })).toThrow();
+    });
+  });
+});
+```
+
+## Performance Testing Patterns
+
+### Pattern: Query Efficiency
+
+Test that queries use indexes:
+
+```typescript
+describe('Performance Tests', () => {
+  it('uses index-backed queries', async () => {
+    // This is more of a code review check, but you can test behavior
+    const startTime = Date.now();
+    
+    // Create 1000 entries
+    for (let i = 0; i < 1000; i++) {
+      await createEntry({ siteId: 'test', name: `User ${i}`, message: 'Test' });
+    }
+    
+    // Query should be fast with index
+    const queryStart = Date.now();
+    const entries = await getEntriesBySite('test');
+    const queryTime = Date.now() - queryStart;
+    
+    // Should complete in under 100ms even with 1000 entries
+    expect(queryTime).toBeLessThan(100);
+    expect(entries.length).toBe(1000);
+  });
+});
+```
+
+### Pattern: Debouncing
+
+Test that expensive operations are debounced:
+
+```typescript
+describe('Debouncing Tests', () => {
+  it('debounces rapid updates', async () => {
+    const mockGenerate = vi.fn();
+    const debouncedGenerate = debounce(mockGenerate, 500);
+    
+    // Trigger 10 times rapidly
+    for (let i = 0; i < 10; i++) {
+      debouncedGenerate();
+    }
+    
+    // Should not have called yet
+    expect(mockGenerate).not.toHaveBeenCalled();
+    
+    // Wait for debounce
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
+    // Should have called exactly once
+    expect(mockGenerate).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+## Negative Test Cases
+
+Always include tests for failure scenarios:
+
+```typescript
+describe('Negative Test Cases', () => {
+  describe('Error Handling', () => {
+    it('handles missing environment variables', () => {
+      delete process.env.NEXT_PUBLIC_CONVEX_URL;
+      
+      expect(() => {
+        new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+      }).toThrow(/missing.*environment/i);
+    });
+    
+    it('handles null user during hydration', () => {
+      const { result } = renderHook(() => useUser());
+      
+      // Simulate hydration state
+      act(() => {
+        result.current = { isSignedIn: true, user: null };
+      });
+      
+      // Should not crash
+      expect(() => {
+        const userId = result.current.user?.id;
+      }).not.toThrow();
+    });
+  });
+  
+  describe('Edge Cases', () => {
+    it('handles empty arrays', () => {
+      const result = processSites([]);
+      expect(result).toEqual([]);
+    });
+    
+    it('handles undefined optional fields', () => {
+      const html = generateSiteHTML({
+        name: 'Test',
+        hobby: 'Test',
+        theme: 'neon',
+        email: undefined,
+      });
+      
+      expect(html).not.toContain('mailto:');
+    });
+    
+    it('handles very long inputs gracefully', () => {
+      const longString = 'a'.repeat(10000);
+      
+      expect(() => {
+        validateConfig({ name: longString, hobby: 'test' });
+      }).toThrow(/too long/i);
+    });
+  });
+});
+```
+
 ## Common Pitfalls
 
 ### ❌ Don't: Test implementation details
@@ -356,6 +583,27 @@ fc.assert(
     // ...
   })
 );
+```
+
+### ❌ Don't: Skip negative test cases
+```typescript
+// Bad - only testing happy path
+it('accepts valid input', () => {
+  expect(validate({ name: 'John' })).toBe(true);
+});
+```
+
+### ✅ Do: Test both valid and invalid inputs
+```typescript
+// Good - testing both paths
+it('accepts valid input', () => {
+  expect(validate({ name: 'John' })).toBe(true);
+});
+
+it('rejects invalid input', () => {
+  expect(() => validate({ name: '' })).toThrow();
+  expect(() => validate({ name: '<script>' })).toThrow();
+});
 ```
 
 ## Debugging Failed Property Tests
