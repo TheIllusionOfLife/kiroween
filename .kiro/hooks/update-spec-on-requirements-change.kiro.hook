@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Update Spec on Requirements Change",
+  "description": "Reminds you to update design and tasks when requirements change",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      ".kiro/specs/**/requirements.md"
+    ]
+  },
+  "then": {
+    "type": "sendMessage",
+    "message": "📋 Requirements document updated! Remember to:\n1. Review the design document for consistency\n2. Update correctness properties if needed\n3. Adjust tasks if requirements changed significantly\n\nWould you like me to help review the changes?"
+  },
+  "workspaceFolderName": "kiroween",
+  "shortName": "update-spec-on-requirements-change"
+}

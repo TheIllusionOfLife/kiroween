@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Check Convex Schema on Change",
+  "description": "Reminds you to update TypeScript types and tests when Convex schema changes",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "convex/schema.ts"
+    ]
+  },
+  "then": {
+    "type": "sendMessage",
+    "message": "🗄️ Convex schema updated! Remember to:\n1. Check if TypeScript types in lib/types.ts need updating\n2. Update any affected mutations/queries\n3. Run tests to ensure nothing broke\n4. Update property tests if data model changed\n\nWould you like me to help identify what needs updating?"
+  },
+  "workspaceFolderName": "kiroween",
+  "shortName": "check-convex-schema-on-change"
+}

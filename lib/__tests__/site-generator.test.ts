@@ -168,6 +168,7 @@ describe('Site Generator', () => {
             addGifs: fc.boolean(),
             addPopups: fc.boolean(),
             addRainbowText: fc.boolean(),
+            soundEffects: fc.boolean(),
           }),
           (config: SiteConfig) => {
             const html = generateSiteHTML(config);

@@ -8,7 +8,7 @@ export interface SiteConfigValidation {
   name?: string;
   hobby?: string;
   theme?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**

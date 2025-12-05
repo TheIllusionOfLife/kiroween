@@ -12,6 +12,15 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated files
+    "convex/_generated/**",
+    "**/_generated/**",
+    // Frozen reference code (vibe_coding is frozen - don't lint)
+    "vibe_coding/**",
+    // Dependencies
+    "node_modules/**",
+    // Test coverage
+    "coverage/**",
   ]),
 ]);
 
