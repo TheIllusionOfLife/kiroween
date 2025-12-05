@@ -200,6 +200,116 @@ describe('Site Generator', () => {
       );
     });
     
+    // **Feature: 90s-website-generator, Property 12: Downloaded sites are self-contained**
+    it('Property 12: Downloaded sites are self-contained', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            name: fc.string({ minLength: 1, maxLength: 50 }),
+            hobby: fc.string({ minLength: 1, maxLength: 100 }),
+            email: fc.option(fc.emailAddress(), { nil: undefined }),
+            theme: fc.constantFrom('neon', 'space', 'rainbow', 'matrix', 'geocities', 'angelfire'),
+            addMusic: fc.boolean(),
+            addCursor: fc.boolean(),
+            addGifs: fc.boolean(),
+            addPopups: fc.boolean(),
+            addRainbowText: fc.boolean(),
+            bgmTrack: fc.option(fc.constantFrom('midi-game', 'midi-chill', 'midi-epic'), { nil: undefined }),
+            soundEffects: fc.boolean(),
+          }),
+          (config: SiteConfig) => {
+            const html = generateSiteHTML(config);
+            
+            // Helper function to escape HTML
+            const escapeHtml = (str: string) => str
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+            
+            // Verify HTML is complete and self-contained (Requirements 11.1, 11.4)
+            expect(html).toContain('<!DOCTYPE html>');
+            expect(html).toContain('<html>');
+            expect(html).toContain('</html>');
+            
+            // Verify all styles are inline (no external CSS)
+            expect(html).toContain('<style>');
+            expect(html).not.toContain('<link rel="stylesheet"');
+            
+            // Verify all scripts are inline (no external JS)
+            expect(html).toContain('<script>');
+            const scriptMatches = html.match(/<script[^>]*src=/g);
+            expect(scriptMatches).toBeNull();
+            
+            // Verify all content is embedded (HTML-escaped)
+            const escapedName = escapeHtml(config.name);
+            const escapedHobby = escapeHtml(config.hobby);
+            expect(html).toContain(escapedName);
+            expect(html).toContain(escapedHobby);
+            
+            // Verify the HTML can work standalone (has all necessary structure)
+            expect(html).toContain('<head>');
+            expect(html).toContain('<body>');
+            expect(html).toContain('<meta charset="UTF-8">');
+            
+            // Verify interactive features are included
+            if (config.addPopups) {
+              expect(html).toContain('alert');
+            }
+            
+            // Verify the HTML is a single complete document
+            const htmlCount = (html.match(/<html>/g) || []).length;
+            expect(htmlCount).toBe(1);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    // **Feature: 90s-website-generator, Property 13: Iframe context suppresses popups**
+    it('Property 13: Iframe context suppresses popups', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            name: fc.string({ minLength: 1, maxLength: 50 }),
+            hobby: fc.string({ minLength: 1, maxLength: 100 }),
+            theme: fc.constantFrom('neon', 'space', 'rainbow', 'matrix', 'geocities', 'angelfire'),
+            addMusic: fc.boolean(),
+            addCursor: fc.boolean(),
+            addGifs: fc.boolean(),
+            addPopups: fc.boolean(),
+            addRainbowText: fc.boolean(),
+            soundEffects: fc.boolean(),
+          }),
+          (config: SiteConfig) => {
+            const html = generateSiteHTML(config);
+            
+            // Verify iframe detection logic is present when popups are enabled (Requirement 12.3)
+            if (config.addPopups) {
+              // Should check if in iframe
+              expect(html).toContain('window.self === window.top');
+              
+              // Popups should be wrapped in iframe check
+              expect(html).toContain('if (window.self === window.top)');
+              
+              // Should have popup code
+              expect(html).toContain('alert');
+            }
+            
+            // If popups are disabled, should not have the welcome popup code
+            if (!config.addPopups) {
+              // Should not have the iframe-wrapped popup code
+              const hasIframeWrappedPopup = html.includes('if (window.self === window.top)') && 
+                                           html.includes('window.addEventListener(\'load\'');
+              expect(hasIframeWrappedPopup).toBe(false);
+            }
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
     // **Feature: 90s-website-generator, Property 4: Audio features are included when configured**
     it('Property 4: Audio features are included when configured', () => {
     fc.assert(

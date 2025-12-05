@@ -7,8 +7,11 @@ import { generateSiteHTML } from "@/lib/site-generator";
 import { useEffect, use } from "react";
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { GuestbookWidget } from "@/components/guestbook/GuestbookWidget";
+import { useGeneratorStore } from "@/lib/store";
 
 export default function SitePage({
   params,
@@ -17,6 +20,9 @@ export default function SitePage({
 }) {
   // Unwrap the params Promise using React.use()
   const { id: siteId } = use(params);
+  const router = useRouter();
+  const { user, isSignedIn } = useUser();
+  const { enterEditMode } = useGeneratorStore();
 
   const site = useQuery(
     api.sites.get,
@@ -33,6 +39,34 @@ export default function SitePage({
       hasIncrementedViews.current = true;
     }
   }, [site, siteId, incrementViews]);
+  
+  // Check if current user owns this site (Requirement 19.1)
+  const isOwner = isSignedIn && user && site && site.userId === user.id;
+  
+  // Handle edit button click (Requirement 19.2)
+  const handleEdit = () => {
+    if (!site) return;
+    
+    // Enter edit mode with site configuration (Requirement 19.2)
+    enterEditMode(siteId, {
+      name: site.name,
+      hobby: site.hobby,
+      email: site.email,
+      theme: site.theme,
+      addMusic: site.addMusic,
+      addCursor: site.addCursor,
+      addGifs: site.addGifs,
+      addPopups: site.addPopups ?? false,
+      addRainbowText: site.addRainbowText ?? false,
+      bgmTrack: site.bgmTrack,
+      soundEffects: site.soundEffects,
+      customFonts: site.customFonts,
+      customColors: site.customColors,
+    });
+    
+    // Navigate to home page in edit mode
+    router.push('/');
+  };
 
   if (!site) {
     return (
@@ -82,6 +116,14 @@ export default function SitePage({
             ← Back to Gallery
           </Link>
           <div className="flex gap-4">
+            {isOwner && (
+              <Button
+                onClick={handleEdit}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                ✏️ Edit Site
+              </Button>
+            )}
             <Button
               onClick={handleDownload}
               className="bg-green-600 hover:bg-green-700"

@@ -85,3 +85,69 @@ export const incrementViews = mutation({
     }
   },
 });
+
+export const updateSite = mutation({
+  args: {
+    siteId: v.id("sites"),
+    userId: v.string(),
+    name: v.string(),
+    hobby: v.string(),
+    email: v.optional(v.string()),
+    theme: v.string(),
+    addMusic: v.boolean(),
+    addCursor: v.boolean(),
+    addGifs: v.boolean(),
+    addPopups: v.optional(v.boolean()),
+    addRainbowText: v.optional(v.boolean()),
+    bgmTrack: v.optional(v.string()),
+    soundEffects: v.boolean(),
+    customFonts: v.optional(v.object({
+      heading: v.optional(v.string()),
+      body: v.optional(v.string()),
+    })),
+    customColors: v.optional(v.object({
+      background: v.optional(v.string()),
+      text: v.optional(v.string()),
+      links: v.optional(v.string()),
+    })),
+  },
+  handler: async (ctx, args) => {
+    // Get existing site to verify ownership and preserve metadata
+    const existing = await ctx.db.get(args.siteId);
+    
+    if (!existing) {
+      throw new Error("Site not found");
+    }
+    
+    // Verify user owns the site (Requirement 19.1)
+    if (existing.userId !== args.userId) {
+      throw new Error("Unauthorized: You can only edit your own sites");
+    }
+    
+    // Validate required fields using shared validation (Requirement 19.3, 19.4, 19.5, 19.6, 19.7, 19.8)
+    validateSiteConfig(args);
+    
+    // Update site configuration while preserving metadata (Requirements 19.9, 19.10)
+    await ctx.db.patch(args.siteId, {
+      name: args.name,
+      hobby: args.hobby,
+      email: args.email,
+      theme: args.theme,
+      addMusic: args.addMusic,
+      addCursor: args.addCursor,
+      addGifs: args.addGifs,
+      addPopups: args.addPopups,
+      addRainbowText: args.addRainbowText,
+      bgmTrack: args.bgmTrack,
+      soundEffects: args.soundEffects,
+      customFonts: args.customFonts,
+      customColors: args.customColors,
+      updatedAt: Date.now(),
+      // Explicitly preserve createdAt and views (Requirements 19.9, 19.10)
+      createdAt: existing.createdAt,
+      views: existing.views,
+    });
+    
+    return args.siteId;
+  },
+});
