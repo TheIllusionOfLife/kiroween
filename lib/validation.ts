@@ -1,4 +1,4 @@
-import { SiteConfig } from './store';
+import type { SiteConfig } from './types';
 
 export interface ValidationResult {
   isValid: boolean;
