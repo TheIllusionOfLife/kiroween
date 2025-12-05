@@ -79,12 +79,23 @@ export function GeneratorForm() {
       
       if (isEditMode && editingSiteId) {
         // Update existing site (Requirements 19.3-19.10)
-        // Exclude createdAt from config as it's not part of updateSite args
-        const { createdAt, ...updateData } = config;
+        // Only pass fields that updateSite mutation expects
         await updateSite({
           siteId: editingSiteId as Id<"sites">,
           userId: user.id,
-          ...updateData,
+          name: config.name,
+          hobby: config.hobby,
+          email: config.email,
+          theme: config.theme,
+          addMusic: config.addMusic,
+          addCursor: config.addCursor,
+          addGifs: config.addGifs,
+          addPopups: config.addPopups,
+          addRainbowText: config.addRainbowText,
+          bgmTrack: config.bgmTrack,
+          soundEffects: config.soundEffects,
+          customFonts: config.customFonts,
+          customColors: config.customColors,
         });
         alert("Site updated successfully!");
         exitEditMode(); // Exit edit mode after successful update
